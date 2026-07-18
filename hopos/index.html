@@ -133,10 +133,13 @@
 <span class="out">hop: agent starting — HOPOS_AGENT_UP</span></pre>
       </div>
       <div class="term">
-        <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;on real metal — USB stick</div>
-        <pre><span class="cmt"># any UEFI arm64 box, or a Raspberry Pi 4/5</span>
+        <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;on real metal — stick or SD card</div>
+        <pre><span class="cmt"># UEFI arm64 box — USB stick</span>
 <span class="ps">$</span> cp BOOTAA64.EFI /Volumes/STICK/EFI/BOOT/
-<span class="ps">$</span> $EDITOR /Volumes/STICK/hopos.cfg   <span class="cmt"># 6 lines</span>
+<span class="ps">$</span> $EDITOR /Volumes/STICK/hopos.cfg      <span class="cmt"># 6 lines</span>
+<span class="cmt"># Raspberry Pi 4/5 — SD card (firmware boot, no UEFI)</span>
+<span class="ps">$</span> cp kernel8.img config.txt /Volumes/bootfs/
+<span class="ps">$</span> $EDITOR /Volumes/bootfs/cmdline.txt   <span class="cmt"># same hopos.* keys</span>
 <span class="cmt"># plug in, power on. that’s the install.</span></pre>
       </div>
     </div>
