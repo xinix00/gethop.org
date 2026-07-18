@@ -212,17 +212,22 @@ td.us::before { content: "▸ "; color: var(--acc); }
 @media (max-width: 880px) { .qs-grid { grid-template-columns: 1fr; } }
 
 /* ── footer ─────────────────────────────────────────────── */
-footer { padding: 54px 0 64px; }
-.foot-grid { display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; }
+footer { padding: 54px 0 56px; }
+.foot-grid {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 48px; flex-wrap: wrap;
+}
 footer pre {
   margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.5;
   color: var(--copper); flex-shrink: 0;
 }
-.foot-meta { font-size: 13.5px; color: var(--muted); max-width: 34em; }
-.foot-meta p { margin: 0 0 10px; }
-.foot-links { font-family: var(--mono); font-size: 13.5px; display: grid; gap: 8px; }
+.foot-links { font-family: var(--mono); font-size: 13.5px; display: grid; gap: 10px; justify-items: start; }
 .foot-links .l-hopos { color: var(--leaf); }
 .foot-links .l-hop { color: var(--copper); }
+.foot-copy {
+  margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+}
 
 /* ── hardware-status ────────────────────────────────────── */
 .st { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; }
