@@ -332,3 +332,6 @@ footer pre {
   .md .mermaid svg { max-width: 100%; }
   .md img { max-width: 100%; border: 1px solid var(--line); border-radius: 5px; }
   .md .state { color: var(--muted); font-family: var(--mono); font-size: 14px; padding: 40px 0; }
+  .md .state .cur { color: var(--acc); animation: statecur 1s steps(1) infinite; }
+  @keyframes statecur { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .md .state .cur { animation: none; } }
