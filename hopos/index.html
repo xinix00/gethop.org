@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HopOS — the Go-only OS. No kernel between your app and the hardware.</title>
+<meta name="description" content="HopOS: a 13 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage — security by subtraction.">
+<meta property="og:title" content="HopOS — the Go-only OS">
+<meta property="og:description" content="No kernel between your app and the hardware. 127 isolated apps on a 128-core server, or three on a Raspberry Pi.">
+<meta property="og:url" content="https://gethop.org/hopos/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="pg-hopos">
+
+<nav class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="/"><span class="ears">(\(\</span> gethop.org</a>
+    <div class="topnav">
+      <a class="other-hop" href="/hop/">HOP · the orchestrator →</a>
+      <a class="gh" href="https://github.com/xinix00/HopOS">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="pg-mark">HopOS · the Go-only OS</p>
+      <h1>No kernel between your app and the hardware.</h1>
+      <p class="lede">A <strong>13 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. 127 apps on a 128-core server; three on a Pi.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/xinix00/HopOS">HopOS on GitHub →</a>
+        <a class="btn btn-ghost" href="#quickstart">boot one in 5 min</a>
+      </div>
+      <p class="cross">jobs land here through <a class="to-hop" href="/hop/">HOP’s hop driver →</a></p>
+    </div>
+    <div class="term" aria-label="Boot log of a real HopOS node">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;altra-1 · serial 115200 · 128 cores</div>
+      <pre><span class="boot-line" style="animation-delay:.2s">   (\(\</span>
+<span class="boot-line" style="animation-delay:.2s">   ( -.-)     HopOS</span>
+<span class="boot-line" style="animation-delay:.2s">   o_(")(")   --------------</span>
+<span class="boot-line" style="animation-delay:.2s">              the Go-only OS</span>
+<span class="boot-line" style="animation-delay:.9s"> </span>
+<span class="boot-line dim" style="animation-delay:.9s">image: 13 MB, signed — OS, drivers, orchestrator</span>
+<span class="boot-line dim" style="animation-delay:1.4s">memory: 384 GiB pool · 126 app slots</span>
+<span class="boot-line dim" style="animation-delay:1.9s">net: igb link 1000Mbps · hwmon: SoC 45.0C</span>
+<span class="boot-line dim" style="animation-delay:2.4s">hop: agent starting — node altra-1 · HOPOS_AGENT_UP</span>
+<span class="boot-line" style="animation-delay:3.1s">Loaded 126 jobs from committed state</span>
+<span class="boot-line hi" style="animation-delay:3.9s">126/126 running — 17.4s after the power was cut</span></pre>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Security by subtraction</h2>
+    <p class="section-lede">Meltdown, Spectre, MDS, container escapes — different bugs, one root: <strong>sharing</strong>. Linux must safely share everything between everyone, with mitigations that are partial, ongoing and expensive. HopOS takes the simpler road: <strong>stop sharing.</strong> Cores and memory are handed out whole, and the cage is the silicon’s second translation stage — not kernel policy.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Attack class</th><th>Linux answer (mitigation)</th><th>HopOS answer (structure)</th></tr></thead>
+        <tbody>
+          <tr><td>Meltdown-class: kernel leaks to user</td><td>KPTI — unmap the kernel, mostly</td><td class="us">No kernel in the app’s address space at all. Behind stage-2, the OS is unnameable.</td></tr>
+          <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">Apps never share a core — not even in time.</td></tr>
+          <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">There is no context switch. Your neighbor never runs on your core.</td></tr>
+          <tr><td>Container escapes (runc, Dirty&nbsp;Pipe, …)</td><td>Patch treadmill</td><td class="us">No containers, and no shared kernel to escape into.</td></tr>
+          <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of a handful of operations, enforced by hardware, not policy.</td></tr>
+          <tr><td>Rogue DMA from a workload</td><td>IOMMU configuration, fingers crossed</td><td class="us">Apps have zero MMIO. Only the node programs devices.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: 34px;">The double win: <strong>no mitigations tax.</strong> Apps run at the silicon’s spec clock — measured, not promised — because there is nothing to scrub. <em>You don’t have to patch what you don’t share.</em></p>
+    <div class="term" style="max-width: 720px; margin-top: 20px;">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;an escape attempt, live</div>
+      <pre><span class="cmt">$ hop job run escape-probe.hcl   # app deliberately reads outside its cage</span>
+<span class="fault">slot 7: stage-2 fault — ESR 0x93c08007 FAR 0x9000f000 · core parked</span>
+<span>slots 1-6, 8-126: unaffected, still serving</span></pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Small enough to actually read</h2>
+    <p class="section-lede">Lines of code, excluding tests, comments and blanks — counted by scripts in the repo, rounded so the numbers stay true across builds. The rung you have to <em>trust</em> is the first one; drivers and board support are swappable outer layers, already outside every cage.</p>
+    <div class="ladder" role="img" aria-label="HopOS code size per layer, in lines">
+      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI</span><span class="bar"><i style="width:92%"></i></span><span class="n">~2,850</span></div>
+      <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,000</span></div>
+      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:73%"></i></span><span class="n">~2,250</span></div>
+      <div class="rung"><span class="lbl">drivers — NIC, NVMe, sensors</span><span class="bar"><i style="width:76%"></i></span><span class="n">~2,350</span></div>
+      <div class="rung"><span class="lbl">board support — ACPI, DTB, UEFI</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,100</span></div>
+    </div>
+    <p class="ladder-sub">all of HopOS <b>~11,600 lines</b> · the Linux kernel alone is ~30,000,000</p>
+    <div class="honest">
+      <h3>HopOS does less. On purpose.</h3>
+      <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the 13 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
+    </div>
+  </div>
+</section>
+
+<section id="hardware">
+  <div class="wrap">
+    <h2>Runs on</h2>
+    <p class="section-lede">One image family covers every board — apps are board-independent, so a job built once runs on all of these. <strong>Proven</strong> means running for real, with soak tests, on our own hardware.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Machine</th><th>App cores</th><th>Network</th><th>Sensors &amp; extras</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Ampere Altra Dev Kit (128-core arm64)</td><td class="us">up to 127</td><td>1 GbE — Intel i210 (igb family)</td><td>SoC temperature, SBSA watchdog, GOP console</td><td><span class="st st-ok">proven — the reference machine</span></td></tr>
+          <tr><td>Raspberry Pi 5</td><td class="us">3</td><td>onboard GbE</td><td>temperature + clock policy (firmware mailbox), watchdog — incl. a workaround for a BCM2712-C1 silicon erratum we found on the way</td><td><span class="st st-ok">proven — 24 h soaks</span></td></tr>
+          <tr><td>Raspberry Pi 4</td><td class="us">3</td><td>onboard GbE (GENET)</td><td>temperature + clock policy, watchdog</td><td><span class="st st-ok">proven</span></td></tr>
+          <tr><td>QEMU virt (EDK2 firmware)</td><td class="us">your -smp</td><td>emulated igb</td><td>the 5-minute quickstart below</td><td><span class="st st-ok">proven — dev &amp; CI target</span></td></tr>
+          <tr><td>Orion O6 (12-core arm64)</td><td class="us">11</td><td>—</td><td>—</td><td><span class="st st-wip">in bring-up</span></td></tr>
+          <tr><td>Any UEFI arm64 box with ACPI</td><td class="us">cores − 1</td><td>igb-family NIC for network; boots headless without one</td><td>SBSA watchdog, serial (SPCR), GOP</td><td><span class="st st-wip">should work — tell us what you boot</span></td></tr>
+          <tr><td>amd64 boards</td><td class="us">—</td><td>—</td><td>—</td><td><span class="st st-plan">planned</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <div class="wrap">
+    <h2>Boot a node in five minutes</h2>
+    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Full guides and signed releases live in <a href="https://github.com/xinix00/HopOS">the repo</a>.</p>
+    <div class="qs-grid">
+      <div class="term">
+        <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;in QEMU — no hardware</div>
+        <pre><span class="cmt"># needs: qemu-system-aarch64 + tamago-go</span>
+<span class="ps">$</span> git clone https://github.com/xinix00/HopOS
+<span class="ps">$</span> cd HopOS && ./image/uefi-run.sh agent
+<span class="out">hop: agent starting — HOPOS_AGENT_UP</span></pre>
+      </div>
+      <div class="term">
+        <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;on real metal — USB stick</div>
+        <pre><span class="cmt"># any UEFI arm64 box, or a Raspberry Pi 4/5</span>
+<span class="ps">$</span> cp BOOTAA64.EFI /Volumes/STICK/EFI/BOOT/
+<span class="ps">$</span> $EDITOR /Volumes/STICK/hopos.cfg   <span class="cmt"># 6 lines</span>
+<span class="cmt"># plug in, power on. that’s the install.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="border-bottom: 0; padding-bottom: 24px;">
+  <div class="wrap">
+    <div class="together">
+      <p><b>Better together.</b> HopOS nodes join a HOP cluster next to your Linux boxes — a caged app on metal and a Docker job on Linux are the same job spec, the same API.</p>
+      <a class="btn btn-ghost" href="/hop/" style="--acc-dim: var(--copper-dim)">meet HOP →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <pre>   (\(\
+   ( -.-)     HopOS
+   o_(")(")   --------------
+              the Go-only OS</pre>
+    <div class="foot-meta">
+      <p>Every number on this page was measured on real hardware — an Ampere Altra dev platform (128 cores, 384 GB) and Raspberry Pi 4/5. The measurement scripts live in the repo, next to the code they measure.</p>
+      <p>© 2026 gethop.org</p>
+    </div>
+    <div class="foot-links">
+      <a class="l-hopos" href="https://github.com/xinix00/HopOS">github.com/xinix00/HopOS</a>
+      <a class="l-hop" href="/hop/">HOP · the orchestrator</a>
+      <a href="mailto:hello@gethop.org">hello@gethop.org</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
