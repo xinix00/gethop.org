@@ -29,7 +29,7 @@
     <div>
       <p class="pg-mark">HOP · the orchestrator</p>
       <h1>One binary runs the cluster.</h1>
-      <p class="lede">Agent, leader and HTTP API in <strong>one Go binary, zero dependencies</strong>. Jobs with health checks, restarts and priorities; an HMAC-signed API; cluster state committed to <strong>any S3 bucket</strong> — a node that reboots brings its own jobs back. And it runs <strong>every kind of workload</strong>: processes, containers, whole machines.</p>
+      <p class="lede">Agent, leader and HTTP API in <strong>one Go binary — no database, no sidecars</strong>. Jobs with health checks, restarts and priorities; an HMAC-signed API; leader election on a CAS lock with cluster state in <strong>any S3 bucket</strong> — a node that reboots brings its own jobs back. And it runs <strong>every kind of workload</strong>: processes, containers, whole machines.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/hop">HOP on GitHub →</a>
         <a class="btn btn-ghost" href="#compare">vs K3s &amp; Nomad</a>
@@ -38,14 +38,14 @@
     </div>
     <div class="term term-cli" aria-label="A HOP CLI session">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;hop cli · any machine</div>
-      <pre><span class="ps">$</span> hop job run api.hcl
-<span class="out">api: dispatched — node altra-1</span>
-<span class="ps">$</span> hop task ls
-<span class="cmt">JOB      STATE     CPU    MEM    DRIVER</span>
-api      running    24%   5.1%   hop
-worker   running   100%   5.1%   hop
-web      running     2%   1.4%   docker
-cron     running     0%   0.2%   exec
+      <pre><span class="ps">$</span> hop apply --name api --driver hop \
+      --artifact https://builds.internal/api.elf --memory 96M
+<span class="out">api: created</span>
+<span class="ps">$</span> hop agents
+<span class="cmt">ID        ENDPOINT                LAST SEEN</span>
+altra-1   http://10.0.0.7:8080    19:41:02
+pi5-a     http://10.0.0.12:8080   19:41:04
+linux-2   http://10.0.0.31:8080   19:41:03
 <span class="ps">$</span> ssh altra-1
 <span class="cmt">ssh: connection refused — there is nothing to ssh into</span></pre>
     </div>
@@ -69,7 +69,7 @@ cron     running     0%   0.2%   exec
         <p>The workload the others can’t: <b>apps without an OS underneath</b>. Whole cores, hardware cages, per-app cpu/mem/temp telemetry with no agents or exporters — see <a href="/hopos/">the HopOS story</a>.</p>
       </div>
     </div>
-    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database. Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware.</p>
+    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster.</p>
   </div>
 </section>
 
@@ -108,7 +108,7 @@ cron     running     0%   0.2%   exec
     <p class="ladder-sub">all of HOP <b>~6,000 lines</b> · a kubelet alone is ~700,000</p>
     <div class="honest">
       <h3>What HOP is not</h3>
-      <p>Not Kubernetes: no CRDs, no operators, no YAML sprawl — and none of the ecosystem either. <b>Single-node orchestration today</b>; clustering is on the roadmap, and the roadmap is public.</p>
+      <p>Not Kubernetes: no CRDs, no operators, no YAML sprawl — and none of the ecosystem either. Clustering is built in — leader election, agent heartbeats, cross-node dispatch, ~60 s failover, federation across clusters — but <b>young</b>: it hasn’t had the years of battle-testing the big names have. We publish what we’ve measured, and we measure in public.</p>
     </div>
   </div>
 </section>
