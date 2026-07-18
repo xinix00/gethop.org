@@ -32,6 +32,7 @@
       <p class="lede">Agent, leader and HTTP API in <strong>one Go binary — no database, no sidecars</strong>. Jobs with health checks, restarts and priorities; an HMAC-signed API; leader election on a CAS lock with cluster state in <strong>any S3 bucket</strong> — a node that reboots brings its own jobs back. And it runs <strong>every kind of workload</strong>: processes, containers, whole machines.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/hop">HOP on GitHub →</a>
+        <a class="btn btn-ghost" href="https://gui.gethop.org">the GUI</a>
         <a class="btn btn-ghost" href="#compare">vs K3s &amp; Nomad</a>
       </div>
       <p class="cross">the hop driver sends jobs to <a class="to-hopos" href="/hopos/">HopOS metal →</a></p>
@@ -69,7 +70,7 @@ linux-2   http://10.0.0.31:8080   19:41:03
         <p>The workload the others can’t: <b>apps without an OS underneath</b>. Whole cores, hardware cages, per-app cpu/mem/temp telemetry with no agents or exporters — see <a href="/hopos/">the HopOS story</a>.</p>
       </div>
     </div>
-    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster.</p>
+    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster. And the node itself stays stateless — <strong>state on S3, not on metal</strong>: nothing to back up, nothing to drift.</p>
   </div>
 </section>
 
@@ -131,6 +132,7 @@ linux-2   http://10.0.0.31:8080   19:41:03
     <div class="foot-links">
       <a class="l-hop" href="https://github.com/xinix00/hop">github.com/xinix00/hop</a>
       <a class="l-hopos" href="/hopos/">HopOS · the Go-only OS</a>
+      <a href="https://gui.gethop.org">gui.gethop.org</a>
       <a href="mailto:hello@gethop.org">hello@gethop.org</a>
     </div>
   </div>

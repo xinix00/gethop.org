@@ -82,6 +82,14 @@
 
 <section>
   <div class="wrap">
+    <h2>Nothing lives on the node</h2>
+    <p class="section-lede">HopOS is <strong>stateless — and so is HOP on top of it</strong>. The boot stick carries a signed image and six lines of config; jobs, app images and cluster state live in object storage and are fetched at boot. <strong>State on S3, not on metal</strong> — there is nothing on the machine to lose, corrupt, drift or steal.</p>
+    <p>That is the whole trick behind the power-cut number: pull the plug on 126 running jobs and the node rebuilds itself from S3 in 17.4&nbsp;s. Lose the machine entirely? Move the stick to another box. “Reinstall” means re-imaging a USB stick. Even shared data is designed to be <em>fetched, not owned</em>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <h2>Small enough to actually read</h2>
     <p class="section-lede">Lines of code, excluding tests, comments and blanks — counted by scripts in the repo, rounded so the numbers stay true across builds. The whole OS <strong>fits in a single AI context window</strong>: audit it in one sitting, human or machine. The rung you have to <em>trust</em> is the first one; drivers and board support are swappable outer layers, already outside every cage.</p>
     <div class="ladder" role="img" aria-label="HopOS code size per layer, in lines">
@@ -165,6 +173,7 @@
     <div class="foot-links">
       <a class="l-hopos" href="https://github.com/xinix00/HopOS">github.com/xinix00/HopOS</a>
       <a class="l-hop" href="/hop/">HOP · the orchestrator</a>
+      <a href="https://gui.gethop.org">gui.gethop.org</a>
       <a href="mailto:hello@gethop.org">hello@gethop.org</a>
     </div>
   </div>
