@@ -71,7 +71,7 @@ linux-2   http://10.0.0.31:8080   19:41:03
         <p>The workload the others can’t: <b>apps without an OS underneath</b>. Whole cores, hardware cages, per-app cpu/mem/temp telemetry with no agents or exporters — see <a href="/hopos/">the HopOS story</a>.</p>
       </div>
     </div>
-    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster. And the node itself stays stateless — <strong>state on S3, not on metal</strong>: nothing to back up, nothing to drift.</p>
+    <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). The lock is plain S3 conditional writes — <code>If-None-Match: *</code> claims the lease, <code>If-Match: &lt;ETag&gt;</code> renews it; the ETag is the proof no one else wrote in between (<a href="/hop/docs/#architecture">how it works</a>). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster. And the node itself stays stateless — <strong>state on S3, not on metal</strong>: nothing to back up, nothing to drift.</p>
   </div>
 </section>
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HopOS — the Go-only OS. No kernel between your app and the hardware.</title>
-<meta name="description" content="HopOS: a 13 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage — security by subtraction.">
+<meta name="description" content="HopOS: a ~15 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage — security by subtraction.">
 <meta property="og:title" content="HopOS — the Go-only OS">
 <meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — same image, Pi to 128-core server.">
 <meta property="og:url" content="https://gethop.org/hopos/">
@@ -30,7 +30,7 @@
     <div>
       <p class="pg-mark">HopOS · the Go-only OS</p>
       <h1>No kernel between your app and the hardware.</h1>
-      <p class="lede">A <strong>13 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — same image, Pi to 128-core server.</p>
+      <p class="lede">A <strong>~15 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — same image, Pi to 128-core server.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/HopOS">HopOS on GitHub →</a>
         <a class="btn btn-ghost" href="#quickstart">boot one in 5 min</a>
@@ -44,7 +44,7 @@
 <span class="boot-line" style="animation-delay:.2s">   o_(")(")   --------------</span>
 <span class="boot-line" style="animation-delay:.2s">              the Go-only OS</span>
 <span class="boot-line" style="animation-delay:.9s"> </span>
-<span class="boot-line dim" style="animation-delay:.9s">image: 13 MB, signed — OS, drivers, orchestrator</span>
+<span class="boot-line dim" style="animation-delay:.9s">image: ~15 MB, signed — OS, drivers, orchestrator</span>
 <span class="boot-line dim" style="animation-delay:1.4s">memory: 384 GiB pool · 126 app slots</span>
 <span class="boot-line dim" style="animation-delay:1.9s">net: igb link 1000Mbps · hwmon: SoC 45.0C</span>
 <span class="boot-line dim" style="animation-delay:2.4s">hop: agent starting — node altra-1 · HOPOS_AGENT_UP</span>
@@ -103,7 +103,7 @@
     <p class="ladder-sub">all of HopOS <b>~11,600 lines</b> · the Linux kernel alone is ~30,000,000</p>
     <div class="honest">
       <h3>HopOS does less. On purpose.</h3>
-      <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the 13 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
+      <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the ~15 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
     </div>
   </div>
 </section>
@@ -126,6 +126,7 @@
         </tbody>
       </table>
     </div>
+    <p style="margin-top: 14px; font-size: 13px; color: var(--muted); font-family: var(--mono);">app cores = total − <a href="/docs/#config">hopos.cores</a> (default 1). The boot log above shows 126 because the reference node reserves two for itself.</p>
   </div>
 </section>
 
