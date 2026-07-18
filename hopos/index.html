@@ -6,7 +6,7 @@
 <title>HopOS — the Go-only OS. No kernel between your app and the hardware.</title>
 <meta name="description" content="HopOS: a 13 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage — security by subtraction.">
 <meta property="og:title" content="HopOS — the Go-only OS">
-<meta property="og:description" content="No kernel between your app and the hardware. 127 isolated apps on a 128-core server, or three on a Raspberry Pi.">
+<meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — same image, Pi to 128-core server.">
 <meta property="og:url" content="https://gethop.org/hopos/">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
@@ -29,7 +29,7 @@
     <div>
       <p class="pg-mark">HopOS · the Go-only OS</p>
       <h1>No kernel between your app and the hardware.</h1>
-      <p class="lede">A <strong>13 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. 127 apps on a 128-core server; three on a Pi.</p>
+      <p class="lede">A <strong>13 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — same image, Pi to 128-core server.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/HopOS">HopOS on GitHub →</a>
         <a class="btn btn-ghost" href="#quickstart">boot one in 5 min</a>
@@ -73,7 +73,7 @@
     <p style="margin-top: 34px;">The double win: <strong>no mitigations tax.</strong> Apps run at the silicon’s spec clock — measured, not promised — because there is nothing to scrub. <em>You don’t have to patch what you don’t share.</em></p>
     <div class="term" style="max-width: 720px; margin-top: 20px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;an escape attempt, live</div>
-      <pre><span class="cmt">$ hop job run escape-probe.hcl   # app deliberately reads outside its cage</span>
+      <pre><span class="cmt">$ hop apply --name escape-probe   # app deliberately reads outside its cage</span>
 <span class="fault">slot 7: stage-2 fault — ESR 0x93c08007 FAR 0x9000f000 · core parked</span>
 <span>slots 1-6, 8-126: unaffected, still serving</span></pre>
     </div>
