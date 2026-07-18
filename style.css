@@ -75,11 +75,12 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
   .menu-box:checked ~ .menu-btn { color: var(--acc); border-color: var(--acc-dim); }
   .topnav { display: none; }
   .menu-box:checked ~ .topnav {
-    display: grid; gap: 12px; justify-items: start;
+    display: grid; gap: 14px; justify-items: start;
     position: absolute; top: 55px; left: -24px; right: -24px;
-    margin: 0; padding: 16px 24px 20px;
+    margin: 0; padding: 20px 32px 24px;
     background: var(--panel-2); border-bottom: 1px solid var(--line);
   }
+  .menu-box:checked ~ .topnav a { padding: 2px 0; }
 }
 
 /* ── chooser (front page) ───────────────────────────────── */
@@ -284,7 +285,7 @@ footer pre {
     .pages-box:checked ~ .docs-nav {
       display: block; border: 1px solid var(--line); border-top: 0;
       border-radius: 0 0 4px 4px; background: var(--panel-2);
-      padding: 14px 16px 18px; margin-top: 0;
+      padding: 16px 22px 20px; margin-top: 0;
     }
     .docs-grid { gap: 0 24px; }
     .md { margin-top: 24px; }
