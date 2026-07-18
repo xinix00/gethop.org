@@ -82,7 +82,7 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
     margin: 0; padding: 20px 32px 24px;
     background: var(--panel-2); border-bottom: 1px solid var(--line);
   }
-  .menu-box:checked ~ .topnav a { padding: 2px 0; }
+  .menu-box:checked ~ .topnav a:not(.gh) { padding: 2px 0; }
 }
 
 /* ── chooser (front page) ───────────────────────────────── */
