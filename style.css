@@ -60,6 +60,28 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 }
 .gh:hover { background: var(--acc); color: var(--bg); text-decoration: none; }
 
+/* mobiel: hamburger (checkbox-truc, geen JS) — de links passen niet naast
+   het merk, dus onder 720px klapt de nav in een paneel onder de balk. */
+.menu-box { display: none; }
+.menu-btn { display: none; }
+@media (max-width: 720px) {
+  .topbar-in { position: relative; }
+  .menu-btn {
+    display: block; margin-left: auto; cursor: pointer;
+    font-family: var(--mono); font-size: 19px; line-height: 1;
+    color: var(--muted); padding: 6px 12px;
+    border: 1px solid var(--line); border-radius: 3px;
+  }
+  .menu-box:checked ~ .menu-btn { color: var(--acc); border-color: var(--acc-dim); }
+  .topnav { display: none; }
+  .menu-box:checked ~ .topnav {
+    display: grid; gap: 12px; justify-items: start;
+    position: absolute; top: 55px; left: -24px; right: -24px;
+    margin: 0; padding: 16px 24px 20px;
+    background: var(--panel-2); border-bottom: 1px solid var(--line);
+  }
+}
+
 /* ── chooser (front page) ───────────────────────────────── */
 .chooser { min-height: 100svh; display: grid; align-content: center; padding: 48px 0; }
 .chooser-head { margin-bottom: 42px; }
@@ -250,6 +272,23 @@ footer pre {
   @media (max-width: 800px) { .docs-grid { grid-template-columns: 1fr; gap: 24px; } }
   .docs-nav { position: sticky; top: 80px; align-self: start; font-family: var(--mono); font-size: 13.5px; }
   @media (max-width: 800px) { .docs-nav { position: static; } }
+  .pages-box, .pages-btn { display: none; }
+  @media (max-width: 800px) {
+    .pages-btn {
+      display: block; cursor: pointer; font-family: var(--mono);
+      font-size: 13.5px; color: var(--muted); padding: 9px 14px;
+      border: 1px solid var(--line); border-radius: 4px; background: var(--panel-2);
+    }
+    .pages-box:checked ~ .pages-btn { color: var(--acc); border-color: var(--acc-dim); border-radius: 4px 4px 0 0; }
+    .docs-nav { display: none; }
+    .pages-box:checked ~ .docs-nav {
+      display: block; border: 1px solid var(--line); border-top: 0;
+      border-radius: 0 0 4px 4px; background: var(--panel-2);
+      padding: 14px 16px 18px; margin-top: 0;
+    }
+    .docs-grid { gap: 0 24px; }
+    .md { margin-top: 24px; }
+  }
   .docs-nav h3 {
     font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase;
     color: var(--muted); margin: 22px 0 10px; font-weight: 600;

@@ -15,6 +15,8 @@
 <nav class="topbar">
   <div class="wrap topbar-in">
     <a class="brand" href="/"><span class="ears">(\(\</span> gethop.org</a>
+    <input type="checkbox" id="menu" class="menu-box">
+    <label for="menu" class="menu-btn" aria-label="menu">≡</label>
     <div class="topnav">
       <a href="/hop/">HOP</a>
       <a class="other-hopos" href="/docs/">HopOS docs →</a>
@@ -24,7 +26,11 @@
 </nav>
 
 <div class="wrap docs-grid">
-  <nav class="docs-nav" id="nav"></nav>
+  <div>
+    <input type="checkbox" id="pages" class="pages-box">
+    <label for="pages" class="pages-btn">pages ▾</label>
+    <nav class="docs-nav" id="nav"></nav>
+  </div>
   <article class="md" id="md"><p class="state">loading…</p></article>
 </div>
 
