@@ -100,7 +100,8 @@
       <div class="rung"><span class="lbl">drivers — NIC, NVMe, sensors</span><span class="bar"><i style="width:76%"></i></span><span class="n">~2,350</span></div>
       <div class="rung"><span class="lbl">board support — ACPI, DTB, UEFI</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,100</span></div>
     </div>
-    <p class="ladder-sub">all of HopOS <b>~11,600 lines</b> · the Linux kernel alone is ~30,000,000</p>
+    <p class="ladder-sub">all of HopOS <b>~11,600 lines</b></p>
+    <p style="margin-top: 24px;">A Linux node doing the same job trusts the kernel (~30,000,000 lines) <em>plus</em> systemd, libc and a container runtime. <strong>HopOS is the whole node in ~11,600.</strong></p>
     <div class="honest">
       <h3>HopOS does less. On purpose.</h3>
       <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the ~15 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
