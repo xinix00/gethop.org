@@ -58,7 +58,9 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
   border: 1px solid var(--acc-dim); color: var(--acc);
   padding: 5px 14px; border-radius: 3px; letter-spacing: .02em;
 }
-.gh:hover { background: var(--acc); color: var(--bg); text-decoration: none; }
+.topnav a.gh:hover, .gh:hover {
+  background: var(--acc); color: var(--bg); text-decoration: none;
+}
 
 /* mobiel: hamburger (checkbox-truc, geen JS) — de links passen niet naast
    het merk, dus onder 720px klapt de nav in een paneel onder de balk. */
