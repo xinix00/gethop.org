@@ -47,7 +47,7 @@
 <span class="boot-line" style="animation-delay:.2s">              the Go-only OS</span>
 <span class="boot-line" style="animation-delay:.9s"> </span>
 <span class="boot-line dim" style="animation-delay:.9s">image: ~15 MB, signed — OS, drivers, orchestrator</span>
-<span class="boot-line dim" style="animation-delay:1.4s">memory: 384 GiB pool · 126 app slots</span>
+<span class="boot-line dim" style="animation-delay:1.4s">memory: 384 GiB pool · 126 available cores</span>
 <span class="boot-line dim" style="animation-delay:1.9s">net: igb link 1000Mbps · hwmon: SoC 45.0C</span>
 <span class="boot-line dim" style="animation-delay:2.4s">hop: agent starting — node altra-1 · HOPOS_AGENT_UP</span>
 <span class="boot-line" style="animation-delay:3.1s">Loaded 126 jobs from committed state</span>
@@ -59,14 +59,14 @@
 <section>
   <div class="wrap">
     <h2>Security by subtraction</h2>
-    <p class="section-lede">Meltdown, Spectre, MDS, container escapes — different bugs, one root: <strong>sharing</strong>. Linux must safely share everything between everyone, with mitigations that are partial, ongoing and expensive. HopOS takes the simpler road: <strong>stop sharing.</strong> Cores and memory are handed out whole, and the cage is the silicon’s second translation stage — not kernel policy.</p>
+    <p class="section-lede">Meltdown, Spectre, MDS, container escapes — different bugs, one root: <strong>sharing</strong>. Linux must safely share everything between everyone, with mitigations that are partial, ongoing and expensive. HopOS takes the simpler road: <strong>share nothing by default.</strong> Cores and memory are handed out whole, and the cage is the silicon’s second translation stage — not kernel policy.</p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Attack class</th><th>Linux answer (mitigation)</th><th>HopOS answer (structure)</th></tr></thead>
         <tbody>
           <tr><td>Meltdown-class: kernel leaks to user</td><td>KPTI — unmap the kernel, mostly</td><td class="us">No kernel in the app’s address space at all. Behind stage-2, the OS is unnameable.</td></tr>
-          <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">Apps never share a core — not even in time.</td></tr>
-          <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">There is no context switch. Your neighbor never runs on your core.</td></tr>
+          <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">By default, apps never share a core — not even in time.</td></tr>
+          <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">By default there is no context switch — your neighbour never runs on your core.</td></tr>
           <tr><td>Container escapes (runc, Dirty&nbsp;Pipe, …)</td><td>Patch treadmill</td><td class="us">No containers, and no shared kernel to escape into.</td></tr>
           <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of a handful of operations, enforced by hardware, not policy.</td></tr>
           <tr><td>Rogue DMA from a workload</td><td>IOMMU configuration, fingers crossed</td><td class="us">Apps have zero MMIO. Only the node programs devices.</td></tr>
@@ -74,6 +74,7 @@
       </table>
     </div>
     <p style="margin-top: 34px;">The double win: <strong>no mitigations tax.</strong> Apps run at the silicon’s spec clock — measured, not promised — because there is nothing to scrub. <em>You don’t have to patch what you don’t share.</em></p>
+    <p style="margin-top: 22px;"><strong>Safe by default, share when trusted.</strong> Everything above is the default: every app owns whole cores. When density matters more than a private core, you <em>opt in</em> — tag apps with a <strong>sharegroup</strong> and they cooperatively share a pool of whole cores you size yourself. You’re naming your own cage-mates: inside the group the timing isolation (the MDS / Spectre rows) is traded for density, like any shared core — but the <strong>memory and network cage never softens.</strong> Each app keeps its own stage-2 partition and its own network stack, so nothing bleeds between neighbours, and apps you don’t group keep the whole-core guarantee in full. It’s how a 4-core Pi runs a dozen trusted services, or a microservice fleet packs onto a handful of cores — without giving up hardware isolation between tenants.</p>
     <div class="term" style="max-width: 720px; margin-top: 20px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;an escape attempt, live</div>
       <pre><span class="cmt">$ hop apply --name escape-probe   # app deliberately reads outside its cage</span>
