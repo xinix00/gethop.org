@@ -1,0 +1,14 @@
+<!doctype html><meta charset=utf-8><title>HopOS SURF apps</title>
+<h1>HopOS SURF apps</h1><p>Kant-en-klare app-images (arm64, canoniek
+gelinkt — één artifact voor elk slot). Gebruik in een jobspec of in
+de boot-config (<code>hopos.init[]</code>/<code>hopos.apps[]</code>):</p>
+<pre>{"name":"taskman","driver":"hop","artifacts":[{"url":"https://gethop.org/apps/taskman.elf"}],
+ "memory_limit":67108864,"env":{"SURF_ADDR":"{{host}}:7878","HOP_ADDR":"10.100.0.1:8080"}}</pre><ul>
+<li><a href="display.elf">display.elf</a> (8.7M)</li>
+<li><a href="clock.elf">clock.elf</a> (5.1M)</li>
+<li><a href="calc.elf">calc.elf</a> (5.1M)</li>
+<li><a href="browser.elf">browser.elf</a> (10M)</li>
+<li><a href="dash.elf">dash.elf</a> (5.0M)</li>
+<li><a href="taskman.elf">taskman.elf</a> (8.4M)</li>
+<li><a href="launcher.elf">launcher.elf</a> (8.4M)</li>
+</ul><p>Bron: <a href=https://github.com/xinix00/hop-os-surf>hop-os-surf</a> — gepubliceerd door tools/publish-apps.sh.</p>
