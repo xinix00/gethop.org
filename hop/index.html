@@ -10,7 +10,7 @@
 <meta property="og:url" content="https://gethop.org/hop/">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
-<link rel="stylesheet" href="/style.css?v=3">
+<link rel="stylesheet" href="/style.css?v=4">
 </head>
 <body class="pg-hop">
 
@@ -73,6 +73,7 @@ linux-2   http://10.0.0.31:8080   19:41:03
         <p>The workload the others can’t: <b>apps without an OS underneath</b>. Whole cores, hardware cages, per-app cpu/mem/temp telemetry with no agents or exporters — see <a href="/hopos/">the HopOS story</a>.</p>
       </div>
     </div>
+    <p style="margin-top: 30px;"><strong>One job spec, every machine in the cluster.</strong> A job can carry <strong>several artifacts</strong>, each with a <code>match</code> on node attributes, and every agent downloads the first one that fits. So one spec sends the arm64 build to a Pi and the riscv64 build to a €10 RISC-V board — no per-node config, no duplicated job. The infrastructure for the metal side is <a href="/hopos/#apps">already published that way</a>: a <a href="https://github.com/xinix00/hoplb">load balancer</a>, <a href="https://github.com/xinix00/hopdns">cluster DNS</a>, a <a href="https://github.com/xinix00/hopprom">Prometheus exporter</a> and Cloudflare’s own tunnel, as signed slot images you point a job at.</p>
     <p style="margin-top: 30px;"><strong>State lives in any S3 bucket</strong> — one committed object is the whole database, and the leader itself fails over on the same lock (~60 s). The lock is plain S3 conditional writes — <code>If-None-Match: *</code> claims the lease, <code>If-Match: &lt;ETag&gt;</code> renews it; the ETag is the proof no one else wrote in between (<a href="/hop/docs/#architecture">how it works</a>). Reboot a node, it reloads its own jobs: <strong>126/126 back in 17.4 s</strong> after a hard power cut, zero resubmits, measured on real hardware. <strong>count:&nbsp;-1</strong> runs a job on every node in the cluster. And the node itself stays stateless — <strong>state on S3, not on metal</strong>: nothing to back up, nothing to drift.</p>
   </div>
 </section>

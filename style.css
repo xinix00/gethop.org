@@ -1,6 +1,8 @@
 /* gethop.org — two products, two voices, one dark habitat.
    HopOS speaks phosphor green (it IS the console color of the OS);
    HOP speaks copper (the operator's tool — the metal in bare metal).
+   SURF is not a third product but a teaser, and speaks the blue of its own
+   compositor — deliberately cooler than both, so it never reads as shipped.
    Each page sets --acc via a body class; everything inherits its voice. */
 :root {
   --bg: #0b0f14;
@@ -13,6 +15,8 @@
   --copper-dim: #a97045;
   --leaf: #56c88b;
   --leaf-dim: #3a8a60;
+  --wave: #6ba6ff;
+  --wave-dim: #43709f;
   --phosphor: #46d979;
   --fault: #e0654f;
   --acc: var(--copper);
@@ -30,6 +34,7 @@ body {
 }
 body.pg-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 body.pg-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
+body.pg-surf { --acc: var(--wave); --acc-dim: var(--wave-dim); }
 a { color: var(--acc); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 2px; }
@@ -54,6 +59,7 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .topnav a:hover { color: var(--text); text-decoration: none; }
 .topnav a.other-hopos:hover { color: var(--leaf); }
 .topnav a.other-hop:hover { color: var(--copper); }
+.topnav a.other-surf:hover { color: var(--wave); }
 .gh {
   border: 1px solid var(--acc-dim); color: var(--acc);
   padding: 5px 14px; border-radius: 3px; letter-spacing: .02em;
@@ -112,6 +118,29 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .door .go { font-family: var(--mono); font-size: 13.5px; color: var(--acc); }
 .door-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 .door-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
+
+/* De derde deur is geen derde product: SURF ligt vollebreed ónder de twee,
+   spreekt zachter (kleinere naam, gedempte thumb) en draagt een badge die
+   hardop zegt dat het een demo is. */
+.door-surf {
+  --acc: var(--wave); --acc-dim: var(--wave-dim);
+  grid-column: 1 / -1; padding: 24px 28px;
+  display: grid; grid-template-columns: 1fr 250px; gap: 30px; align-items: center;
+}
+@media (max-width: 800px) { .door-surf { grid-template-columns: 1fr; gap: 18px; } }
+.door-surf .name { font-size: 21px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.door-surf .badge {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--acc); font-weight: 600;
+  border: 1px solid var(--acc-dim); border-radius: 3px; padding: 2px 8px;
+}
+.door-surf p { margin: 6px 0 14px; }
+.door-surf .thumb img {
+  display: block; width: 100%; height: auto; opacity: .8;
+  border: 1px solid var(--line); border-radius: 4px;
+}
+.door-surf:hover .thumb img { opacity: 1; }
+@media (max-width: 800px) { .door-surf .thumb { order: -1; } }
 .chooser-foot {
   margin-top: 46px; font-family: var(--mono); font-size: 12.5px; color: var(--muted);
   display: flex; gap: 24px; flex-wrap: wrap;
@@ -216,6 +245,19 @@ td.us::before { content: "▸ "; color: var(--acc); }
 }
 .ladder-sub b { color: var(--acc); }
 
+/* Per-architectuur-sprossen: je compileert er precies één van, dus ze staan
+   onder een streep en dragen hun eigen label i.p.v. dat ze meetellen alsof
+   elke node alles draait. */
+.rung-split {
+  grid-column: 1 / -1; margin: 6px 0 2px; padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  font-family: var(--mono); font-size: 12px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.rung-split b { color: var(--acc); font-weight: 600; }
+.rung-arch .lbl b { color: var(--acc); }
+.rung-arch .bar i { background: color-mix(in srgb, var(--acc) 55%, var(--panel)); }
+
 /* ── cards & callouts ───────────────────────────────────── */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 @media (max-width: 880px) { .cards { grid-template-columns: 1fr; } }
@@ -231,6 +273,35 @@ td.us::before { content: "▸ "; color: var(--acc); }
 .honest h3 { font-family: var(--mono); font-size: 13.5px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 10px; color: var(--acc); }
 .honest p { font-size: 14.5px; color: var(--muted); margin: 0; max-width: none; }
 .honest p b { color: var(--text); }
+
+/* ── screenshots ────────────────────────────────────────── */
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 0 0 8px; }
+@media (max-width: 880px) { .shots { grid-template-columns: 1fr; } }
+.shot { margin: 0; }
+.shot img {
+  display: block; width: 100%; height: auto; border: 1px solid var(--line);
+  border-radius: 6px; background: #070b10;
+  box-shadow: 0 24px 60px -32px rgba(0,0,0,.9);
+}
+.shot figcaption {
+  font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+  margin-top: 12px; line-height: 1.55;
+}
+.shot figcaption b { color: var(--text); font-weight: 600; }
+
+/* ── kant-en-klare apps ─────────────────────────────────── */
+.apps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 34px; margin: 0; }
+@media (max-width: 720px) { .apps { grid-template-columns: 1fr; } }
+.apps div {
+  display: grid; grid-template-columns: 108px 1fr; gap: 14px;
+  padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14.5px;
+}
+.apps dt {
+  font-family: var(--mono); font-size: 13.5px; color: var(--acc);
+  margin: 0; overflow-wrap: anywhere;
+}
+.apps dd { margin: 0; color: var(--muted); }
+.apps dd b { color: var(--text); font-weight: 600; }
 
 /* ── quickstart ─────────────────────────────────────────── */
 .qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -249,6 +320,7 @@ footer pre {
 .foot-links { font-family: var(--mono); font-size: 13.5px; display: grid; gap: 10px; justify-items: start; }
 .foot-links .l-hopos { color: var(--leaf); }
 .foot-links .l-hop { color: var(--copper); }
+.foot-links .l-surf { color: var(--wave); }
 .foot-copy {
   margin: 40px 0 0; padding-top: 18px; border-top: 1px solid var(--line);
   font-family: var(--mono); font-size: 12px; color: var(--muted);

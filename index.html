@@ -6,11 +6,11 @@
 <title>gethop.org — HopOS, the Go-only OS · HOP, the orchestrator</title>
 <meta name="description" content="Two small pieces for people who run their own metal: HopOS, an OS with no kernel between your app and the hardware — and HOP, a single-binary job orchestrator.">
 <meta property="og:title" content="gethop.org — HopOS · HOP">
-<meta property="og:description" content="HopOS: the Go-only OS, hardware isolation per app. HOP: a single-binary orchestrator for processes, containers and whole machines.">
+<meta property="og:description" content="HopOS: the Go-only OS, hardware isolation per app, on ARM and RISC-V. HOP: a single-binary orchestrator for processes, containers and whole machines.">
 <meta property="og:url" content="https://gethop.org">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
-<link rel="stylesheet" href="/style.css?v=3">
+<link rel="stylesheet" href="/style.css?v=4">
 </head>
 <body>
 
@@ -26,7 +26,7 @@
       <a class="door door-hopos" href="/hopos/">
         <div class="name">HopOS</div>
         <div class="role">The Go-only OS</div>
-        <p>An operating system that is <b>only your application</b>: no Linux, no containers, no kernel in front of the hardware. By default every app gets whole cores behind a silicon cage — and trusted apps can share a core when you want the density.</p>
+        <p>An operating system that is <b>only your application</b>: no Linux, no containers, no kernel in front of the hardware. By default every app gets whole cores behind a silicon cage — on <b>ARM and RISC-V</b>, from a €10 board to a 128-core server.</p>
         <span class="go">read the HopOS story →</span>
       </a>
       <a class="door door-hop" href="/hop/">
@@ -34,6 +34,15 @@
         <div class="role">The orchestrator</div>
         <p>A <b>single binary</b> that runs everything — processes, containers, and whole machines on HopOS. Leader, agent and API in one process; state in any S3 bucket.</p>
         <span class="go">read the HOP story →</span>
+      </a>
+      <a class="door door-surf" href="/surf/">
+        <div>
+          <div class="name">SURF <span class="badge">teaser</span></div>
+          <div class="role">what else fits on it</div>
+          <p>Not a third product — a <b>demo</b>. Windows that belong to the cluster instead of the machine: an app draws wherever it happens to run, one display composites it, and a window survives its app moving to another box. Built out of ordinary HopOS apps, including a browser.</p>
+          <span class="go">see the demo →</span>
+        </div>
+        <div class="thumb"><img src="/surf/img/desktop.png" alt="A desktop with windows from three different machines" loading="lazy" width="1280" height="720"></div>
       </a>
     </div>
     <div class="chooser-foot">

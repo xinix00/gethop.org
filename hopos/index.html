@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HopOS — the Go-only OS. No kernel between your app and the hardware.</title>
-<meta name="description" content="HopOS: a ~15 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage — security by subtraction.">
+<meta name="description" content="HopOS: a ~15 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage, on ARM and RISC-V — security by subtraction.">
 <meta property="og:title" content="HopOS — the Go-only OS">
-<meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — same image, Pi to 128-core server.">
+<meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — from a €10 RISC-V board to a 128-core ARM server.">
 <meta property="og:url" content="https://gethop.org/hopos/">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
-<link rel="stylesheet" href="/style.css?v=3">
+<link rel="stylesheet" href="/style.css?v=4">
 </head>
 <body class="pg-hopos">
 
@@ -32,7 +32,7 @@
     <div>
       <p class="pg-mark">HopOS · the Go-only OS</p>
       <h1>No kernel between your app and the hardware.</h1>
-      <p class="lede">A <strong>~15 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box or a Raspberry Pi, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — same image, Pi to 128-core server.</p>
+      <p class="lede">A <strong>~15 MB signed image on a USB stick is the entire node</strong>. It boots any UEFI arm64 box, a Raspberry Pi or a <strong>€10 RISC-V board</strong>, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — one design, one job spec, from that €10 board to a 128-core ARM server.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/HopOS">HopOS on GitHub →</a>
         <a class="btn btn-ghost" href="#quickstart">boot one in 5 min</a>
@@ -59,12 +59,12 @@
 <section>
   <div class="wrap">
     <h2>Security by subtraction</h2>
-    <p class="section-lede">Meltdown, Spectre, MDS, container escapes — different bugs, one root: <strong>sharing</strong>. Linux must safely share everything between everyone, with mitigations that are partial, ongoing and expensive. HopOS takes the simpler road: <strong>share nothing by default.</strong> Cores and memory are handed out whole, and the cage is the silicon’s second translation stage — not kernel policy.</p>
+    <p class="section-lede">Meltdown, Spectre, MDS, container escapes — different bugs, one root: <strong>sharing</strong>. Linux must safely share everything between everyone, with mitigations that are partial, ongoing and expensive. HopOS takes the simpler road: <strong>share nothing by default.</strong> Cores and memory are handed out whole, and the cage is <strong>silicon</strong> — a second translation stage on ARM, a PMP whitelist on RISC-V — not kernel policy.</p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Attack class</th><th>Linux answer (mitigation)</th><th>HopOS answer (structure)</th></tr></thead>
         <tbody>
-          <tr><td>Meltdown-class: kernel leaks to user</td><td>KPTI — unmap the kernel, mostly</td><td class="us">No kernel in the app’s address space at all. Behind stage-2, the OS is unnameable.</td></tr>
+          <tr><td>Meltdown-class: kernel leaks to user</td><td>KPTI — unmap the kernel, mostly</td><td class="us">No kernel in the app’s address space at all. Behind the cage, the OS is not unmapped — it is <em>unnameable</em>.</td></tr>
           <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">No involuntary co-tenancy — an attacker can never land on your core. Sharing is opt-in, among apps you name.</td></tr>
           <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">Your neighbour never runs on your core unless you put them there — an adversary can’t.</td></tr>
           <tr><td>Container escapes (runc, Dirty&nbsp;Pipe, …)</td><td>Patch treadmill</td><td class="us">No containers, and no shared kernel to escape into.</td></tr>
@@ -74,13 +74,28 @@
       </table>
     </div>
     <p style="margin-top: 34px;">The double win: <strong>no mitigations tax.</strong> Apps run at the silicon’s spec clock — measured, not promised — because there is nothing to scrub. <em>You don’t have to patch what you don’t share.</em></p>
-    <p style="margin-top: 22px;"><strong>Safe by default, share when trusted.</strong> Everything above is the default: every app owns whole cores. When density matters more than a private core, you <em>opt in</em> — tag apps with a <strong>sharegroup</strong> and they cooperatively share a pool of whole cores you size yourself. You pick your own cage-mates, so an attacker still can’t get onto your core: the only apps sharing it are ones you grouped, that already trust each other. And even then the <strong>memory and network cage never softens</strong> — each app keeps its own stage-2 partition and its own network stack, so nothing bleeds between neighbours, and apps you don’t group keep the whole-core guarantee in full. It’s how a 4-core Pi runs a dozen trusted services, or a microservice fleet packs onto a handful of cores — without giving up hardware isolation between tenants.</p>
+    <p style="margin-top: 22px;"><strong>Safe by default, share when trusted.</strong> Everything above is the default: every app owns whole cores. When density matters more than a private core, you <em>opt in</em> — tag apps with a <strong>sharegroup</strong> and they cooperatively share a pool of whole cores you size yourself. You pick your own cage-mates, so an attacker still can’t get onto your core: the only apps sharing it are ones you grouped, that already trust each other. And even then the <strong>memory and network cage never softens</strong> — each app keeps its own hardware-bounded partition and its own network stack, so nothing bleeds between neighbours, and apps you don’t group keep the whole-core guarantee in full. It’s how a 4-core Pi runs a dozen trusted services, or a microservice fleet packs onto a handful of cores — without giving up hardware isolation between tenants.</p>
     <div class="term" style="max-width: 720px; margin-top: 20px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;an escape attempt, live</div>
       <pre><span class="cmt">$ hop apply --name escape-probe   # app deliberately reads outside its cage</span>
 <span class="fault">slot 7: stage-2 fault — ESR 0x93c08007 FAR 0x9000f000 · core parked</span>
 <span>slots 1-6, 8-126: unaffected, still serving</span></pre>
     </div>
+
+    <p style="margin-top: 40px;"><strong>One cage, two instruction sets.</strong> A cage does two separable things: it <em>bounds</em> what an app may reach — the invariant — and it <em>relocates</em> the app so every slot sees itself at the same address, which is only a convenience. On ARM one page table does both, which is why nobody named them apart. The XuanTie C906 in a €10 RISC-V board has <strong>no hypervisor extension at all</strong> — stage-2 does not exist on that silicon — so there the bound is a <strong>PMP whitelist</strong> and the relocation a supervisor page table. Pulling the two apart is what made RISC-V a <em>translation</em> of the ARM design instead of a second design.</p>
+    <div class="tbl-wrap" style="margin-top: 22px;">
+      <table style="min-width: 520px;">
+        <thead><tr><th>ARM</th><th>RISC-V</th><th>What it is</th></tr></thead>
+        <tbody>
+          <tr><td>EL2</td><td>machine mode</td><td class="us">the level HopOS owns</td></tr>
+          <tr><td>EL1</td><td>supervisor mode</td><td class="us">the level your app runs in — it cannot touch the cage from there</td></tr>
+          <tr><td>stage-2 table</td><td>PMP whitelist</td><td class="us">the bound: everything outside the app’s own partition is unnameable</td></tr>
+          <tr><td>stage-2 fault → EL2</td><td>trap → machine mode</td><td class="us">how a violation is caught (measured: <code>mcause 7</code> on the store)</td></tr>
+          <tr><td><code>HVC</code> yield</td><td><code>ecall</code> yield</td><td class="us">how a shared core is handed over</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: 22px;">The invariant survives the translation because it never rested on ARM: the loader stub <strong>reads the cage configuration back and refuses to dispatch on a mismatch</strong> — the RISC-V counterpart of refusing to boot below EL2. A cage that cannot be shown to stand does not get an app. And because a hart reset hands back a provably clean slot, a kill <em>is</em> a reset.</p>
   </div>
 </section>
 
@@ -95,16 +110,19 @@
 <section>
   <div class="wrap">
     <h2>Small enough to actually read</h2>
-    <p class="section-lede">Lines of code, excluding tests, comments and blanks — counted by scripts in the repo, rounded so the numbers stay true across builds. The whole OS <strong>fits in a single AI context window</strong>: audit it in one sitting, human or machine. The rung you have to <em>trust</em> is the first one; drivers and board support are swappable outer layers, already outside every cage.</p>
-    <div class="ladder" role="img" aria-label="HopOS code size per layer, in lines">
-      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI</span><span class="bar"><i style="width:92%"></i></span><span class="n">~2,850</span></div>
-      <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,000</span></div>
-      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:73%"></i></span><span class="n">~2,250</span></div>
-      <div class="rung"><span class="lbl">drivers — NIC, NVMe, sensors</span><span class="bar"><i style="width:76%"></i></span><span class="n">~2,350</span></div>
-      <div class="rung"><span class="lbl">board support — ACPI, DTB, UEFI</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,100</span></div>
+    <p class="section-lede">Lines of code, excluding tests, comments and blanks, rounded so the numbers stay true across builds — and counted <strong>the way the compiler sees it</strong>: a file that only builds for one instruction set counts only against that one. So the bottom two rungs are an <em>either/or</em>. <strong>You audit one tree, never both.</strong> The rung you have to <em>trust</em> is the first one; drivers and board support are swappable outer layers, already outside every cage.</p>
+    <div class="ladder" role="img" aria-label="HopOS code size per layer, in lines, split into shared code and per-architecture code">
+      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI</span><span class="bar"><i style="width:78%"></i></span><span class="n">~3,100</span></div>
+      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:87%"></i></span><span class="n">~3,450</span></div>
+      <div class="rung"><span class="lbl">drivers — NIC families, NVMe, sensors</span><span class="bar"><i style="width:37%"></i></span><span class="n">~1,450</span></div>
+      <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,250</span></div>
+      <div class="rung"><span class="lbl">firmware tables, boot config, display grant</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,250</span></div>
+      <div class="rung-split">portable Go so far: <b>~10,500 lines</b> — then pick exactly one:</div>
+      <div class="rung rung-arch"><span class="lbl"><b>arm64</b> — EL2 + stage-2, PSCI, UEFI/ACPI/DTB, igb·gem·genet</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,950</span></div>
+      <div class="rung rung-arch"><span class="lbl"><b>riscv64</b> — machine mode + PMP, SG2002, dwmac</span><span class="bar"><i style="width:39%"></i></span><span class="n">~1,550</span></div>
     </div>
-    <p class="ladder-sub">all of HopOS <b>~11,600 lines</b></p>
-    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~11,600.</strong></p>
+    <p class="ladder-sub">an arm64 node is <b>~14,450 lines</b> · a RISC-V node <b>~12,100</b></p>
+    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~14,450.</strong> Both trees together are ~16,000 lines, but no node ever runs both: <strong>a node still fits in a single AI context window</strong>, so you can audit the machine you actually booted in one sitting, human or machine.</p>
     <div class="honest">
       <h3>HopOS does less. On purpose.</h3>
       <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the ~15 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
@@ -112,10 +130,30 @@
   </div>
 </section>
 
+<section id="apps">
+  <div class="wrap">
+    <h2>You don’t have to write it all yourself</h2>
+    <p class="section-lede">“Only Go apps” sounds like an empty machine. It isn’t: the infrastructure a node normally needs is already built, signed and published as slot images. Every one of these is <strong>just an app in a cage</strong> — no privileges, no MMIO, same rules as your code. Point a job spec at the URL and it runs.</p>
+    <dl class="apps">
+      <div><dt>welcome</dt><dd>A page on port 80 that says the node is alive and what it runs on — cores, RAM partition, architecture, uptime. <b>Ships in the default headless config</b>, so a fresh node is never a blank screen: open <code>http://&lt;node-ip&gt;/</code> and that is your install check.</dd></div>
+      <div><dt>cloudflared</dt><dd>Cloudflare’s <b>own</b> <code>tunnel run</code>, unmodified. A node behind NAT, with no inbound port and no kernel, made publicly reachable.</dd></div>
+      <div><dt>hoplb</dt><dd>Load balancer that takes its routes live from the cluster, streaming-safe for SSE and websockets.</dd></div>
+      <div><dt>hopdns</dt><dd>Cluster DNS, so a job can say <code>display.hop.local</code> instead of an address — with static CNAMEs and merged federation queries.</dd></div>
+      <div><dt>hopprom</dt><dd>Prometheus exporter with per-job CPU and memory — <b>no agent and no node exporter</b>, because the node already measures every slot.</dd></div>
+      <div><dt>SURF apps</dt><dd>Someone went further and built windows, a compositor and a browser on top of all this — a demo, not part of HopOS: <a href="/surf/">see SURF</a>.</dd></div>
+    </dl>
+    <div class="honest">
+      <h3>Why cloudflared is the interesting one</h3>
+      <p>The tunnel is not the point. The point is that “just a Go program in a slot” also holds for <b>somebody else’s</b> Go program: cloudflared’s entire dependency tree — a forked quic-go, gopacket, gopsutil, gRPC, OpenTelemetry, Prometheus, capnproto — compiles for HopOS untouched. Two small platform fallbacks were all that was missing. That is the honest measure of how much of the Go ecosystem this OS can actually host.</p>
+    </div>
+    <p style="margin-top: 30px;">All of them are published as signed artifacts in <a href="https://github.com/xinix00/hop/releases/tag/rolling-release">HOP’s rolling release</a>, for both architectures where it makes sense — and <strong>one job spec covers both</strong>: list two artifacts, each with a <code>match</code> on <code>node.arch</code>, and every node downloads the build that fits it.</p>
+  </div>
+</section>
+
 <section id="hardware">
   <div class="wrap">
     <h2>Runs on</h2>
-    <p class="section-lede">One image family covers every board — apps are board-independent, so a job built once runs on all of these. <strong>Proven</strong> means running for real, with soak tests, on our own hardware.</p>
+    <p class="section-lede">Apps are board-independent: <strong>one build per architecture</strong> runs on every board of that architecture, and a single job spec covers both. <strong>Proven</strong> means running for real, with soak tests, on our own hardware.</p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Machine</th><th>App cores</th><th>Network</th><th>Sensors &amp; extras</th><th>Status</th></tr></thead>
@@ -124,6 +162,7 @@
           <tr><td>Raspberry Pi 5</td><td class="us">3</td><td>onboard GbE</td><td>temperature + clock policy (firmware mailbox), watchdog — incl. a workaround for a BCM2712-C1 silicon erratum we found on the way</td><td><span class="st st-ok">proven — 24 h soaks</span></td></tr>
           <tr><td>Raspberry Pi 4</td><td class="us">3</td><td>onboard GbE (GENET)</td><td>temperature + clock policy, watchdog</td><td><span class="st st-ok">proven</span></td></tr>
           <tr><td>QEMU virt (EDK2 firmware)</td><td class="us">your -smp</td><td>emulated igb</td><td>the 5-minute quickstart below</td><td><span class="st st-ok">proven — dev &amp; CI target</span></td></tr>
+          <tr><td>LicheeRV Nano (RISC-V — Sophgo SG2002, ~€10)</td><td class="us">1</td><td>100 Mb — internal ePHY (DWMAC), DHCP</td><td>on-die temperature, hardware RNG, console over the network</td><td><span class="st st-wip">the first RISC-V node — build from source</span></td></tr>
           <tr><td>Orion O6 (12-core arm64)</td><td class="us">11</td><td>—</td><td>—</td><td><span class="st st-wip">in bring-up</span></td></tr>
           <tr><td>Any UEFI arm64 box with ACPI</td><td class="us">cores − 1</td><td>igb-family NIC for network; boots headless without one</td><td>SBSA watchdog, serial (SPCR), GOP</td><td><span class="st st-wip">should work — tell us what you boot</span></td></tr>
           <tr><td>amd64 boards</td><td class="us">—</td><td>—</td><td>—</td><td><span class="st st-plan">planned</span></td></tr>
@@ -131,13 +170,14 @@
       </table>
     </div>
     <p style="margin-top: 14px; font-size: 13px; color: var(--muted); font-family: var(--mono);">app cores = total − <a href="/hopos/docs/#config">hopos.cores</a> (default 1). The boot log above shows 126 because the reference node reserves two for itself.</p>
+    <p style="margin-top: 18px;">The RISC-V board is the <strong>newest port and the honest edge of the table</strong>: the PMP cage, the slot lifecycle (including kill and restart) and the 100 Mb link are proven on hardware, and you build the image from the tree — there is no signed release asset for it yet. It earns its row anyway, because it is the proof the cage design was never an ARM trick: two harts, 256 MB and ten euros run the same isolation contract as a 128-core Altra.</p>
   </div>
 </section>
 
 <section id="quickstart">
   <div class="wrap">
     <h2>Boot a node in five minutes</h2>
-    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Full guides: <a href="/hopos/docs/">the docs</a>; signed images: <a href="https://github.com/xinix00/HopOS/releases">releases</a>.</p>
+    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Every release ships <strong>two flavours of each asset</strong>: <code>gui</code> grants one app the framebuffer (that is what <a href="/surf/">SURF</a> uses), <code>headless</code> links <em>zero</em> graphics code. Both carry a <strong>default config</strong>, so a fresh stick boots into something instead of waiting for you. Full guides: <a href="/hopos/docs/">the docs</a>; signed images: <a href="https://github.com/xinix00/HopOS/releases">releases</a>.</p>
     <div class="qs-grid">
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;in QEMU — no hardware</div>
@@ -149,13 +189,13 @@
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;on real metal — stick or SD card</div>
         <pre><span class="cmt"># signed images: <a href="https://github.com/xinix00/HopOS/releases">github.com/xinix00/HopOS/releases</a></span>
-<span class="cmt"># UEFI arm64 box — USB stick</span>
+<span class="cmt"># UEFI arm64 box — USB stick, FAT32</span>
 <span class="ps">$</span> cp BOOTAA64.EFI /Volumes/STICK/EFI/BOOT/
-<span class="ps">$</span> $EDITOR /Volumes/STICK/hopos.cfg      <span class="cmt"># 6 lines</span>
-<span class="cmt"># Raspberry Pi 4/5 — SD card (firmware boot, no UEFI)</span>
-<span class="ps">$</span> cp hop-agent5.img config.txt /Volumes/bootfs/
-<span class="ps">$</span> $EDITOR /Volumes/bootfs/cmdline.txt   <span class="cmt"># same hopos.* keys</span>
-<span class="cmt"># plug in, power on. that’s the install.</span></pre>
+<span class="ps">$</span> cp hopos.cfg /Volumes/STICK/    <span class="cmt"># set hopos.apikey</span>
+<span class="cmt"># Raspberry Pi 4/5 — SD card, config included</span>
+<span class="ps">$</span> unzip hopos-rpi5.zip -d /Volumes/bootfs
+<span class="cmt"># plug in, power on. that’s the install.</span>
+<span class="ps">$</span> open http://&lt;node-ip&gt;/          <span class="cmt"># the node says hi</span></pre>
       </div>
     </div>
   </div>
@@ -178,6 +218,7 @@
               the Go-only OS</pre>
     <div class="foot-links">
       <a class="l-hopos" href="https://github.com/xinix00/HopOS">github.com/xinix00/HopOS</a>
+      <a class="l-surf" href="/surf/">SURF · the GUI teaser</a>
       <a class="l-hop" href="/hop/">HOP · the orchestrator</a>
       <a href="https://gui.gethop.org">gui.gethop.org</a>
       <a href="mailto:hello@gethop.org">hello@gethop.org</a>
