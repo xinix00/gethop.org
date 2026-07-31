@@ -117,35 +117,25 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .door-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 .door-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
 
-/* SURF is geen derde deur: geen product, dus één regel ónder de twee deuren.
-   Wél een echte banner — blauwe wash en eigen kader, zodat hij opvalt zonder
-   de hoogte van een deur te krijgen. Naam, wat het is, en dat het
-   experimenteel is. Meer niet. */
+/* SURF krijgt een échte banner: een gevuld blauw blok, zoals een advertentie.
+   Hij mág schreeuwen — maar hij is één regel hoog en heeft geen kop, dus hij
+   kan nooit voor een sectie doorgaan. Het label zegt wat het is. */
 .banner {
-  --acc: var(--wave); --acc-dim: var(--wave-dim);
-  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
-  margin-top: 30px; padding: 15px 22px;
-  font-family: var(--mono);
-  border: 1px solid color-mix(in srgb, var(--wave) 28%, var(--line));
-  border-radius: 5px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  margin-top: 30px; padding: 17px 24px; border-radius: 5px;
+  font-family: var(--mono); color: #eaf2ff;
   background: linear-gradient(100deg,
-    color-mix(in srgb, var(--wave) 15%, var(--panel-2)),
-    color-mix(in srgb, var(--wave) 5%, var(--panel-2)));
-  transition: border-color .15s ease, background .15s ease;
+    color-mix(in srgb, var(--wave) 54%, #071019),
+    color-mix(in srgb, var(--wave) 38%, #071019));
+  transition: filter .15s ease;
 }
-.banner:hover {
-  text-decoration: none; border-color: var(--acc-dim);
-  background: linear-gradient(100deg,
-    color-mix(in srgb, var(--wave) 22%, var(--panel-2)),
-    color-mix(in srgb, var(--wave) 8%, var(--panel-2)));
-}
-.banner-name { font-size: 17px; font-weight: 700; color: var(--acc); }
-.banner-sub { font-size: 13.5px; color: var(--text); }
+.banner:hover { text-decoration: none; filter: brightness(1.14); }
+.banner-name { font-size: 19px; font-weight: 700; letter-spacing: .02em; color: #fff; }
+.banner-sub { font-size: 14px; color: color-mix(in srgb, #fff 74%, var(--wave)); }
 .banner .badge {
-  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--acc); margin-left: auto;
-  border: 1px solid color-mix(in srgb, var(--wave) 34%, var(--line));
-  border-radius: 3px; padding: 2px 8px;
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  font-weight: 700; margin-left: auto; padding: 3px 9px;
+  background: #eaf2ff; color: #0d1a2b; border-radius: 3px;
 }
 /* Zodra de regel wikkelt hoort het label niet meer rechts te hangen. */
 @media (max-width: 620px) { .banner .badge { margin-left: 0; } }
