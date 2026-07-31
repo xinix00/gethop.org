@@ -6,7 +6,7 @@
 <title>HopOS — the Go-only OS. No kernel between your app and the hardware.</title>
 <meta name="description" content="HopOS: a ~15 MB signed image is the entire node. No Linux. Every Go app runs on its own physical cores behind a hardware cage, on ARM and RISC-V — security by subtraction.">
 <meta property="og:title" content="HopOS — the Go-only OS">
-<meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — from a €10 RISC-V board to a 128-core Ampere Altra.">
+<meta property="og:description" content="No kernel between your app and the hardware. Your core count is your headroom — from a €15 RISC-V board to a 128-core Ampere Altra.">
 <meta property="og:url" content="https://gethop.org/hopos/">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
@@ -33,7 +33,7 @@
     <div>
       <p class="pg-mark">HopOS · the Go-only OS</p>
       <h1>No kernel between your app and the hardware.</h1>
-      <p class="lede">A <strong>~15 MB signed image on a USB stick is the entire node</strong>. It boots a <strong>128-core Ampere Altra</strong>, any other UEFI arm64 box, a Raspberry Pi or a <strong>€10 RISC-V board</strong>, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — one design, one job spec, from that €10 board to 127 caged app cores.</p>
+      <p class="lede">A <strong>~15 MB signed image on a USB stick is the entire node</strong>. It boots a <strong>128-core Ampere Altra</strong>, any other UEFI arm64 box, a Raspberry Pi or a <strong>€15 RISC-V board</strong>, and runs each Go app on its <strong>own physical cores</strong>, inside its own memory cage. <strong>Your core count is your headroom</strong> — one design, one job spec, from that €15 board to 127 caged app cores.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/xinix00/HopOS">HopOS on GitHub →</a>
         <a class="btn btn-ghost" href="#quickstart">boot one in 5 min</a>
@@ -83,7 +83,7 @@
 <span>slots 1-6, 8-126: unaffected, still serving</span></pre>
     </div>
 
-    <p style="margin-top: 40px;"><strong>One cage, two instruction sets.</strong> A cage does two separable things: it <em>bounds</em> what an app may reach — the invariant — and it <em>relocates</em> the app so every slot sees itself at the same address, which is only a convenience. On ARM one page table does both, which is why nobody named them apart. The XuanTie C906 in a €10 RISC-V board has <strong>no hypervisor extension at all</strong> — stage-2 does not exist on that silicon — so there the bound is a <strong>PMP whitelist</strong> and the relocation a supervisor page table. Pulling the two apart is what made RISC-V a <em>translation</em> of the ARM design instead of a second design.</p>
+    <p style="margin-top: 40px;"><strong>One cage, two instruction sets.</strong> A cage does two separable things: it <em>bounds</em> what an app may reach — the invariant — and it <em>relocates</em> the app so every slot sees itself at the same address, which is only a convenience. On ARM one page table does both, which is why nobody named them apart. The XuanTie C906 in a €15 RISC-V board has <strong>no hypervisor extension at all</strong> — stage-2 does not exist on that silicon — so there the bound is a <strong>PMP whitelist</strong> and the relocation a supervisor page table. Pulling the two apart is what made RISC-V a <em>translation</em> of the ARM design instead of a second design.</p>
     <div class="tbl-wrap" style="margin-top: 22px;">
       <table style="min-width: 520px;">
         <thead><tr><th>ARM</th><th>RISC-V</th><th>What it is</th></tr></thead>
@@ -163,7 +163,7 @@
           <tr><td>Raspberry Pi 5</td><td class="us">3</td><td>onboard GbE</td><td>temperature + clock policy (firmware mailbox), watchdog — incl. a workaround for a BCM2712-C1 silicon erratum we found on the way</td><td><span class="st st-ok">proven — 24 h soaks</span></td></tr>
           <tr><td>Raspberry Pi 4</td><td class="us">3</td><td>onboard GbE (GENET)</td><td>temperature + clock policy, watchdog</td><td><span class="st st-ok">proven</span></td></tr>
           <tr><td>QEMU virt (EDK2 firmware)</td><td class="us">your -smp</td><td>emulated igb</td><td>the 5-minute quickstart below</td><td><span class="st st-ok">proven — dev &amp; CI target</span></td></tr>
-          <tr><td>LicheeRV Nano (RISC-V — Sophgo SG2002, ~€10)</td><td class="us">1</td><td>100 Mb — internal ePHY (DWMAC), DHCP</td><td>on-die temperature, hardware RNG, console over the network</td><td><span class="st st-wip">the first RISC-V node — build from source</span></td></tr>
+          <tr><td>LicheeRV Nano (RISC-V — Sophgo SG2002, ~€15)</td><td class="us">1</td><td>100 Mb — internal ePHY (DWMAC), DHCP + NTP</td><td>on-die temperature, hardware RNG, console over the network</td><td><span class="st st-ok">proven — signed image, serving public traffic</span></td></tr>
           <tr><td>Orion O6 (12-core arm64)</td><td class="us">11</td><td>—</td><td>—</td><td><span class="st st-wip">in bring-up</span></td></tr>
           <tr><td>Any UEFI arm64 box with ACPI</td><td class="us">cores − 1</td><td>igb-family NIC for network; boots headless without one</td><td>SBSA watchdog, serial (SPCR), GOP</td><td><span class="st st-wip">should work — tell us what you boot</span></td></tr>
           <tr><td>amd64 boards</td><td class="us">—</td><td>—</td><td>—</td><td><span class="st st-plan">planned</span></td></tr>
@@ -171,7 +171,7 @@
       </table>
     </div>
     <p style="margin-top: 14px; font-size: 13px; color: var(--muted); font-family: var(--mono);">app cores = total − <a href="/hopos/docs/#config">hopos.cores</a> (default 1). The boot log above shows 126 because the reference node reserves two for itself.</p>
-    <p style="margin-top: 18px;">The RISC-V board is the newest port: the PMP cage, the slot lifecycle including kill and restart, and the 100 Mb link run on hardware; the image is built from the tree, since there is no signed release asset for it yet. Two harts, 256 MB and ten euros carry <strong>the same isolation contract as the 128-core Altra</strong>.</p>
+    <p style="margin-top: 18px;">The RISC-V board is the newest port and ships as a signed image since v1.6.0. On it: the PMP cage, the slot lifecycle including kill and restart, DHCP and NTP over its own DWMAC driver, and <strong>cloudflared in a 62 MB partition</strong> putting the node on the public internet. Two harts, 256 MB and fifteen euros carry <strong>the same isolation contract as the 128-core Altra</strong> — the app ABI is identical, only the mechanism under it differs per silicon.</p>
   </div>
 </section>
 
@@ -204,13 +204,14 @@
             <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-headless.cfg">hopos-headless.cfg</a></td>
           </tr>
           <tr>
-            <td>LicheeRV Nano — RISC-V</td>
-            <td class="us" colspan="2">no signed asset yet — <a href="/hopos/docs/#boot">build it from the tree</a></td>
+            <td>LicheeRV Nano — RISC-V, SD card</td>
+            <td>no framebuffer on this board</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-licheerv.img.gz">hopos-licheerv.img.gz</a></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top: 22px;">One edit is required in the config: <code>hopos.apikey</code>. For UEFI, the headless EFI has to be renamed to <code>BOOTAA64.EFI</code> on the stick — the firmware looks for that exact name.</p>
+    <p style="margin-top: 22px;">One edit is required in the config: <code>hopos.apikey</code>. For UEFI, the headless EFI has to be renamed to <code>BOOTAA64.EFI</code> on the stick — the firmware looks for that exact name. The RISC-V image is the <strong>whole card</strong>, partition table included, and carries its config <em>inside</em>: that board has no SD driver of its own, so <a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-licheerv.cfg">hopos-licheerv.cfg</a> is what went into this build rather than something you edit afterwards — change it by rebuilding.</p>
     <p style="margin-top: 18px;"><strong>Verify before you boot it.</strong> Every release is signed with an SSH key; <a href="https://github.com/xinix00/HopOS/releases/latest/download/allowed_signers">allowed_signers</a> and <a href="https://github.com/xinix00/HopOS/releases/latest/download/release_key.pub">release_key.pub</a> are published next to it.</p>
     <div class="term" style="max-width: 720px; margin-top: 18px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;check the signature, then the images</div>
@@ -225,7 +226,7 @@
 <section id="quickstart">
   <div class="wrap">
     <h2>Boot a node in five minutes</h2>
-    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. On metal it is three commands, because the <strong>default config boots as-is</strong>. Images: <a href="#download">above</a>; full guides: <a href="/hopos/docs/">the docs</a>.</p>
+    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. On metal it is copy and boot, because the <strong>default config boots as-is</strong>. Images: <a href="#download">above</a>; full guides: <a href="/hopos/docs/">the docs</a>.</p>
     <div class="qs-grid">
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;in QEMU — no hardware</div>
@@ -242,6 +243,9 @@
 <span class="ps">$</span> cp hopos.cfg /Volumes/STICK/    <span class="cmt"># set hopos.apikey</span>
 <span class="cmt"># Raspberry Pi 4/5 — SD card, config included</span>
 <span class="ps">$</span> unzip hopos-rpi5.zip -d /Volumes/bootfs
+<span class="cmt"># LicheeRV Nano — RISC-V, the whole card</span>
+<span class="ps">$</span> gunzip hopos-licheerv.img.gz
+<span class="ps">$</span> sudo dd if=hopos-licheerv.img of=/dev/rdiskN bs=4m
 <span class="cmt"># plug in, power on. that’s the install.</span>
 <span class="ps">$</span> open http://&lt;node-ip&gt;/          <span class="cmt"># the node says hi</span></pre>
       </div>
