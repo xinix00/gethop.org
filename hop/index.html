@@ -20,6 +20,7 @@
     <input type="checkbox" id="menu" class="menu-box">
     <label for="menu" class="menu-btn" aria-label="menu">≡</label>
     <div class="topnav">
+      <a href="#download">download</a>
       <a href="/hop/docs/">docs</a>
       <a class="other-hopos" href="/hopos/">HopOS · the Go-only OS →</a>
       <a class="gh" href="https://github.com/xinix00/hop">GitHub</a>
@@ -115,6 +116,41 @@ linux-2   http://10.0.0.31:8080   19:41:03
       <h3>What HOP is not</h3>
       <p>Not Kubernetes: no CRDs, no operators, no YAML sprawl — and none of the ecosystem either. Will it have bugs? All software does. The difference is the setup: <b>~5,000 KISS lines that fit in a single AI context window</b> — you can audit the entire orchestrator in one sitting, human or machine. It has been <b>running our own production workloads for months</b>. We eat here first.</p>
     </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <h2>Download</h2>
+    <p class="section-lede">Each archive holds two files: <strong><code>agent</code></strong> — the node, which is agent, leader and HTTP API in one process — and <strong><code>run</code></strong>, the CLI you drive it with. Every link points at the <strong>newest release</strong>; GitHub resolves <code>latest</code>, so nothing here goes stale.</p>
+    <div class="tbl-wrap">
+      <table style="min-width: 560px;">
+        <thead><tr><th>Platform</th><th>Archive</th><th>Drivers</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Linux · amd64</td>
+            <td class="us"><a href="https://github.com/xinix00/hop/releases/latest/download/hop-linux-amd64.tar.gz">hop-linux-amd64.tar.gz</a></td>
+            <td>exec · Docker · hop</td>
+          </tr>
+          <tr>
+            <td>Linux · arm64</td>
+            <td class="us"><a href="https://github.com/xinix00/hop/releases/latest/download/hop-linux-arm64.tar.gz">hop-linux-arm64.tar.gz</a></td>
+            <td>exec · Docker · hop</td>
+          </tr>
+          <tr>
+            <td>macOS · Apple silicon</td>
+            <td class="us"><a href="https://github.com/xinix00/hop/releases/latest/download/hop-darwin-arm64.tar.gz">hop-darwin-arm64.tar.gz</a></td>
+            <td>exec — a laptop in the cluster</td>
+          </tr>
+          <tr>
+            <td>Checksums</td>
+            <td class="us"><a href="https://github.com/xinix00/hop/releases/latest/download/checksums.txt">checksums.txt</a></td>
+            <td><code>shasum -a 256 -c</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: 22px;">No agent to install on a HopOS machine: there the agent <em>is</em> the boot image — <a href="/hopos/#download">download that instead</a>. The <a href="https://gui.gethop.org">web UI</a> is hosted, so it needs no download either; it talks to whichever cluster you point it at.</p>
   </div>
 </section>
 

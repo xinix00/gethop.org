@@ -20,6 +20,7 @@
     <input type="checkbox" id="menu" class="menu-box">
     <label for="menu" class="menu-btn" aria-label="menu">≡</label>
     <div class="topnav">
+      <a href="#download">download</a>
       <a href="/hopos/docs/">docs</a>
       <a class="other-hop" href="/hop/">HOP · the orchestrator →</a>
       <a class="gh" href="https://github.com/xinix00/HopOS">GitHub</a>
@@ -174,10 +175,57 @@
   </div>
 </section>
 
+<section id="download">
+  <div class="wrap">
+    <h2>Download</h2>
+    <p class="section-lede">Signed boot images. Every link here points at the <strong>newest release</strong> — GitHub resolves <code>latest</code>, so nothing on this page goes stale. Two flavours of each: <strong>GUI</strong> grants one app the framebuffer and boots a desktop, <strong>headless</strong> links zero graphics code.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Machine</th><th>GUI</th><th>Headless</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>UEFI arm64 — USB stick</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/BOOTAA64.EFI">BOOTAA64.EFI</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/BOOTAA64-headless.EFI">BOOTAA64-headless.EFI</a></td>
+          </tr>
+          <tr>
+            <td>Raspberry Pi 5 — SD card</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5.zip">hopos-rpi5.zip</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5-headless.zip">hopos-rpi5-headless.zip</a></td>
+          </tr>
+          <tr>
+            <td>Raspberry Pi 4 — SD card</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4.zip">hopos-rpi4.zip</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4-headless.zip">hopos-rpi4-headless.zip</a></td>
+          </tr>
+          <tr>
+            <td>Node config — needed for UEFI, already inside the Pi zips</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos.cfg">hopos.cfg</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-headless.cfg">hopos-headless.cfg</a></td>
+          </tr>
+          <tr>
+            <td>LicheeRV Nano — RISC-V</td>
+            <td class="us" colspan="2">no signed asset yet — <a href="/hopos/docs/#boot">build it from the tree</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top: 22px;">One edit is required in the config: <code>hopos.apikey</code>. For UEFI, the headless EFI has to be renamed to <code>BOOTAA64.EFI</code> on the stick — the firmware looks for that exact name.</p>
+    <p style="margin-top: 18px;"><strong>Verify before you boot it.</strong> Every release is signed with an SSH key; <a href="https://github.com/xinix00/HopOS/releases/latest/download/allowed_signers">allowed_signers</a> and <a href="https://github.com/xinix00/HopOS/releases/latest/download/release_key.pub">release_key.pub</a> are published next to it.</p>
+    <div class="term" style="max-width: 720px; margin-top: 18px;">
+      <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;check the signature, then the images</div>
+      <pre><span class="ps">$</span> ssh-keygen -Y verify -f allowed_signers -I hello@gethop.org \
+      -n gethop-release -s <a href="https://github.com/xinix00/HopOS/releases/latest/download/SHA256SUMS.sig">SHA256SUMS.sig</a> &lt; <a href="https://github.com/xinix00/HopOS/releases/latest/download/SHA256SUMS">SHA256SUMS</a>
+<span class="ps">$</span> shasum -a 256 -c SHA256SUMS
+<span class="out">BOOTAA64.EFI: OK</span></pre>
+    </div>
+  </div>
+</section>
+
 <section id="quickstart">
   <div class="wrap">
     <h2>Boot a node in five minutes</h2>
-    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Every release ships <strong>two flavours of each asset</strong>: <code>gui</code> grants one app the framebuffer, <code>headless</code> links <em>zero</em> graphics code. Both carry a <strong>default config</strong> that boots as-is; <code>hopos.apikey</code> is the one required edit. Full guides: <a href="/hopos/docs/">the docs</a>; signed images: <a href="https://github.com/xinix00/HopOS/releases">releases</a>.</p>
+    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. On metal it is three commands, because the <strong>default config boots as-is</strong>. Images: <a href="#download">above</a>; full guides: <a href="/hopos/docs/">the docs</a>.</p>
     <div class="qs-grid">
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;in QEMU — no hardware</div>
