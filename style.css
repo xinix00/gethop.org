@@ -117,32 +117,23 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .door-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 .door-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
 
-/* SURF is geen derde deur: geen product, dus een banner ónder de twee deuren.
-   Geen kader, kleinere stem, thumb links — het hoort erbij zonder mee te dingen. */
+/* SURF is geen derde deur: geen product, dus één regel ónder de twee deuren.
+   Naam, wat het is, en dat het experimenteel is. Meer niet. */
 .banner {
   --acc: var(--wave); --acc-dim: var(--wave-dim);
-  display: grid; grid-template-columns: 230px 1fr; gap: 26px; align-items: center;
-  margin-top: 26px; padding-top: 26px; border-top: 1px solid var(--line);
-  color: var(--text);
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--line);
+  font-family: var(--mono);
 }
 .banner:hover { text-decoration: none; }
-@media (max-width: 800px) { .banner { grid-template-columns: 1fr; gap: 16px; } }
-.banner img {
-  display: block; width: 100%; height: auto; opacity: .72;
-  border: 1px solid var(--line); border-radius: 4px;
-}
-.banner:hover img { opacity: 1; }
-.banner-name {
-  font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--acc);
-  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
-}
+.banner-name { font-size: 17px; font-weight: 700; color: var(--acc); }
+.banner-sub { font-size: 13.5px; color: var(--muted); }
+.banner:hover .banner-sub { color: var(--text); }
 .banner .badge {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--muted); font-weight: 400;
-  border: 1px solid var(--line); border-radius: 3px; padding: 2px 8px;
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line);
+  border-radius: 3px; padding: 2px 8px;
 }
-.banner p { margin: 8px 0 12px; font-size: 14.5px; color: var(--muted); }
-.banner .go { font-family: var(--mono); font-size: 12.5px; color: var(--acc); }
 .chooser-foot {
   margin-top: 46px; font-family: var(--mono); font-size: 12.5px; color: var(--muted);
   display: flex; gap: 24px; flex-wrap: wrap;
