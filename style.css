@@ -1,8 +1,8 @@
 /* gethop.org — two products, two voices, one dark habitat.
    HopOS speaks phosphor green (it IS the console color of the OS);
    HOP speaks copper (the operator's tool — the metal in bare metal).
-   SURF is not a third product but a teaser, and speaks the blue of its own
-   compositor — deliberately cooler than both, so it never reads as shipped.
+   The SURF banner borrows the blue of its own compositor — cooler than both,
+   because it is a thing that runs on HopOS, not a third product.
    Each page sets --acc via a body class; everything inherits its voice. */
 :root {
   --bg: #0b0f14;
@@ -34,7 +34,6 @@ body {
 }
 body.pg-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 body.pg-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
-body.pg-surf { --acc: var(--wave); --acc-dim: var(--wave-dim); }
 a { color: var(--acc); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 2px; }
@@ -59,7 +58,6 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .topnav a:hover { color: var(--text); text-decoration: none; }
 .topnav a.other-hopos:hover { color: var(--leaf); }
 .topnav a.other-hop:hover { color: var(--copper); }
-.topnav a.other-surf:hover { color: var(--wave); }
 .gh {
   border: 1px solid var(--acc-dim); color: var(--acc);
   padding: 5px 14px; border-radius: 3px; letter-spacing: .02em;
@@ -119,28 +117,32 @@ a:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-rad
 .door-hopos { --acc: var(--leaf); --acc-dim: var(--leaf-dim); }
 .door-hop { --acc: var(--copper); --acc-dim: var(--copper-dim); }
 
-/* De derde deur is geen derde product: SURF ligt vollebreed ónder de twee,
-   spreekt zachter (kleinere naam, gedempte thumb) en draagt een badge die
-   hardop zegt dat het een demo is. */
-.door-surf {
+/* SURF is geen derde deur: geen product, dus een banner ónder de twee deuren.
+   Geen kader, kleinere stem, thumb links — het hoort erbij zonder mee te dingen. */
+.banner {
   --acc: var(--wave); --acc-dim: var(--wave-dim);
-  grid-column: 1 / -1; padding: 24px 28px;
-  display: grid; grid-template-columns: 1fr 250px; gap: 30px; align-items: center;
+  display: grid; grid-template-columns: 230px 1fr; gap: 26px; align-items: center;
+  margin-top: 26px; padding-top: 26px; border-top: 1px solid var(--line);
+  color: var(--text);
 }
-@media (max-width: 800px) { .door-surf { grid-template-columns: 1fr; gap: 18px; } }
-.door-surf .name { font-size: 21px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.door-surf .badge {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em;
-  text-transform: uppercase; color: var(--acc); font-weight: 600;
-  border: 1px solid var(--acc-dim); border-radius: 3px; padding: 2px 8px;
-}
-.door-surf p { margin: 6px 0 14px; }
-.door-surf .thumb img {
-  display: block; width: 100%; height: auto; opacity: .8;
+.banner:hover { text-decoration: none; }
+@media (max-width: 800px) { .banner { grid-template-columns: 1fr; gap: 16px; } }
+.banner img {
+  display: block; width: 100%; height: auto; opacity: .72;
   border: 1px solid var(--line); border-radius: 4px;
 }
-.door-surf:hover .thumb img { opacity: 1; }
-@media (max-width: 800px) { .door-surf .thumb { order: -1; } }
+.banner:hover img { opacity: 1; }
+.banner-name {
+  font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--acc);
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+}
+.banner .badge {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); font-weight: 400;
+  border: 1px solid var(--line); border-radius: 3px; padding: 2px 8px;
+}
+.banner p { margin: 8px 0 12px; font-size: 14.5px; color: var(--muted); }
+.banner .go { font-family: var(--mono); font-size: 12.5px; color: var(--acc); }
 .chooser-foot {
   margin-top: 46px; font-family: var(--mono); font-size: 12.5px; color: var(--muted);
   display: flex; gap: 24px; flex-wrap: wrap;
@@ -273,21 +275,6 @@ td.us::before { content: "▸ "; color: var(--acc); }
 .honest h3 { font-family: var(--mono); font-size: 13.5px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 10px; color: var(--acc); }
 .honest p { font-size: 14.5px; color: var(--muted); margin: 0; max-width: none; }
 .honest p b { color: var(--text); }
-
-/* ── screenshots ────────────────────────────────────────── */
-.shots { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 0 0 8px; }
-@media (max-width: 880px) { .shots { grid-template-columns: 1fr; } }
-.shot { margin: 0; }
-.shot img {
-  display: block; width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 6px; background: #070b10;
-  box-shadow: 0 24px 60px -32px rgba(0,0,0,.9);
-}
-.shot figcaption {
-  font-family: var(--mono); font-size: 12.5px; color: var(--muted);
-  margin-top: 12px; line-height: 1.55;
-}
-.shot figcaption b { color: var(--text); font-weight: 600; }
 
 /* ── kant-en-klare apps ─────────────────────────────────── */
 .apps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 34px; margin: 0; }

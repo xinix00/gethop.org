@@ -132,21 +132,21 @@
 
 <section id="apps">
   <div class="wrap">
-    <h2>You don’t have to write it all yourself</h2>
-    <p class="section-lede">“Only Go apps” sounds like an empty machine. It isn’t: the infrastructure a node normally needs is already built, signed and published as slot images. Every one of these is <strong>just an app in a cage</strong> — no privileges, no MMIO, same rules as your code. Point a job spec at the URL and it runs.</p>
+    <h2>Slot apps that already exist</h2>
+    <p class="section-lede">The infrastructure a node usually needs is built and published as signed slot images. Each one is <strong>an ordinary app in a cage</strong> — no privileges, no MMIO, the same rules as your own code. A job spec points at the URL.</p>
     <dl class="apps">
-      <div><dt>welcome</dt><dd>A page on port 80 that says the node is alive and what it runs on — cores, RAM partition, architecture, uptime. <b>Ships in the default headless config</b>, so a fresh node is never a blank screen: open <code>http://&lt;node-ip&gt;/</code> and that is your install check.</dd></div>
-      <div><dt>cloudflared</dt><dd>Cloudflare’s <b>own</b> <code>tunnel run</code>, unmodified. A node behind NAT, with no inbound port and no kernel, made publicly reachable.</dd></div>
+      <div><dt>welcome</dt><dd>A page on port 80 with what the node is running on: cores, RAM partition, architecture, uptime. <b>Ships in the default headless config</b> — <code>http://&lt;node-ip&gt;/</code> is the install check.</dd></div>
+      <div><dt>cloudflared</dt><dd>Cloudflare’s <b>own</b> <code>tunnel run</code>, unmodified: a node behind NAT, with no inbound port and no kernel, reachable from the internet.</dd></div>
       <div><dt>hoplb</dt><dd>Load balancer that takes its routes live from the cluster, streaming-safe for SSE and websockets.</dd></div>
       <div><dt>hopdns</dt><dd>Cluster DNS, so a job can say <code>display.hop.local</code> instead of an address — with static CNAMEs and merged federation queries.</dd></div>
       <div><dt>hopprom</dt><dd>Prometheus exporter with per-job CPU and memory — <b>no agent and no node exporter</b>, because the node already measures every slot.</dd></div>
-      <div><dt>SURF apps</dt><dd>Someone went further and built windows, a compositor and a browser on top of all this — a demo, not part of HopOS: <a href="/surf/">see SURF</a>.</dd></div>
+      <div><dt>SURF</dt><dd>Windows, a software compositor and a browser, built on the framebuffer grant. A separate thing that runs on HopOS, not part of it: <a href="https://github.com/xinix00/hop-os-surf">hop-os-surf</a>.</dd></div>
     </dl>
     <div class="honest">
-      <h3>Why cloudflared is the interesting one</h3>
-      <p>The tunnel is not the point. The point is that “just a Go program in a slot” also holds for <b>somebody else’s</b> Go program: cloudflared’s entire dependency tree — a forked quic-go, gopacket, gopsutil, gRPC, OpenTelemetry, Prometheus, capnproto — compiles for HopOS untouched. Two small platform fallbacks were all that was missing. That is the honest measure of how much of the Go ecosystem this OS can actually host.</p>
+      <h3>How much of the Go ecosystem compiles</h3>
+      <p>cloudflared is the measurement rather than the feature. Its dependency tree — a forked quic-go, gopacket, gopsutil, gRPC, OpenTelemetry, Prometheus, capnproto — compiles for HopOS untouched, on <b>two small platform fallbacks</b>. The 30 MB arm64 image is somebody else’s program in a slot, on the same terms as yours.</p>
     </div>
-    <p style="margin-top: 30px;">All of them are published as signed artifacts in <a href="https://github.com/xinix00/hop/releases/tag/rolling-release">HOP’s rolling release</a>, for both architectures where it makes sense — and <strong>one job spec covers both</strong>: list two artifacts, each with a <code>match</code> on <code>node.arch</code>, and every node downloads the build that fits it.</p>
+    <p style="margin-top: 30px;">They are published as signed artifacts in <a href="https://github.com/xinix00/hop/releases/tag/rolling-release">HOP’s rolling release</a>, for both architectures where one exists. <strong>One job spec covers both</strong>: list two artifacts, each with a <code>match</code> on <code>node.arch</code>, and every node downloads the build that fits it.</p>
   </div>
 </section>
 
@@ -170,14 +170,14 @@
       </table>
     </div>
     <p style="margin-top: 14px; font-size: 13px; color: var(--muted); font-family: var(--mono);">app cores = total − <a href="/hopos/docs/#config">hopos.cores</a> (default 1). The boot log above shows 126 because the reference node reserves two for itself.</p>
-    <p style="margin-top: 18px;">The RISC-V board is the <strong>newest port and the honest edge of the table</strong>: the PMP cage, the slot lifecycle (including kill and restart) and the 100 Mb link are proven on hardware, and you build the image from the tree — there is no signed release asset for it yet. It earns its row anyway, because it is the proof the cage design was never an ARM trick: two harts, 256 MB and ten euros run the same isolation contract as a 128-core Altra.</p>
+    <p style="margin-top: 18px;">The RISC-V board is the newest port: the PMP cage, the slot lifecycle including kill and restart, and the 100 Mb link run on hardware; the image is built from the tree, since there is no signed release asset for it yet. Two harts, 256 MB and ten euros carry <strong>the same isolation contract as the 128-core Altra</strong>.</p>
   </div>
 </section>
 
 <section id="quickstart">
   <div class="wrap">
     <h2>Boot a node in five minutes</h2>
-    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Every release ships <strong>two flavours of each asset</strong>: <code>gui</code> grants one app the framebuffer (that is what <a href="/surf/">SURF</a> uses), <code>headless</code> links <em>zero</em> graphics code. Both carry a <strong>default config</strong>, so a fresh stick boots into something instead of waiting for you. Full guides: <a href="/hopos/docs/">the docs</a>; signed images: <a href="https://github.com/xinix00/HopOS/releases">releases</a>.</p>
+    <p class="section-lede">No hardware needed — the same image that runs a 128-core Ampere Altra boots in QEMU. Every release ships <strong>two flavours of each asset</strong>: <code>gui</code> grants one app the framebuffer, <code>headless</code> links <em>zero</em> graphics code. Both carry a <strong>default config</strong> that boots as-is; <code>hopos.apikey</code> is the one required edit. Full guides: <a href="/hopos/docs/">the docs</a>; signed images: <a href="https://github.com/xinix00/HopOS/releases">releases</a>.</p>
     <div class="qs-grid">
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;in QEMU — no hardware</div>
@@ -218,7 +218,7 @@
               the Go-only OS</pre>
     <div class="foot-links">
       <a class="l-hopos" href="https://github.com/xinix00/HopOS">github.com/xinix00/HopOS</a>
-      <a class="l-surf" href="/surf/">SURF · the GUI teaser</a>
+      <a class="l-surf" href="https://github.com/xinix00/hop-os-surf">SURF · the GUI for HopOS</a>
       <a class="l-hop" href="/hop/">HOP · the orchestrator</a>
       <a href="https://gui.gethop.org">gui.gethop.org</a>
       <a href="mailto:hello@gethop.org">hello@gethop.org</a>
