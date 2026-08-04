@@ -69,7 +69,7 @@
           <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">No involuntary co-tenancy — an attacker can never land on your core. Sharing is opt-in, among apps you name.</td></tr>
           <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">Your neighbour never runs on your core unless you put them there — an adversary can’t.</td></tr>
           <tr><td>Container escapes (runc, Dirty&nbsp;Pipe, …)</td><td>Patch treadmill</td><td class="us">No containers, and no shared kernel to escape into.</td></tr>
-          <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of a handful of operations, enforced by hardware, not policy.</td></tr>
+          <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of <strong>ten operations</strong>, enforced by hardware, not policy.</td></tr>
           <tr><td>Rogue DMA from a workload</td><td>IOMMU configuration, fingers crossed</td><td class="us">Apps have zero MMIO. Only the node programs devices.</td></tr>
         </tbody>
       </table>
@@ -83,7 +83,7 @@
 <span>slots 1-6, 8-126: unaffected, still serving</span></pre>
     </div>
 
-    <p style="margin-top: 40px;"><strong>One cage, two instruction sets.</strong> A cage does two separable things: it <em>bounds</em> what an app may reach — the invariant — and it <em>relocates</em> the app so every slot sees itself at the same address, which is only a convenience. On ARM one page table does both, which is why nobody named them apart. The XuanTie C906 in a €15 RISC-V board has <strong>no hypervisor extension at all</strong> — stage-2 does not exist on that silicon — so there the bound is a <strong>PMP whitelist</strong> and the relocation a supervisor page table. Pulling the two apart is what made RISC-V a <em>translation</em> of the ARM design instead of a second design.</p>
+    <p style="margin-top: 40px;"><strong>One cage, two instruction sets.</strong> A cage does two separable things: it <em>bounds</em> what an app may reach — the invariant — and it <em>relocates</em> the app so every slot sees itself at the same address, which is only a convenience. On ARM one page table does both. The XuanTie C906 in a €15 RISC-V board has <strong>no hypervisor extension at all</strong> — stage-2 does not exist on that silicon — so there the bound is a <strong>PMP whitelist</strong> and the relocation a supervisor page table.</p>
     <div class="tbl-wrap" style="margin-top: 22px;">
       <table style="min-width: 520px;">
         <thead><tr><th>ARM</th><th>RISC-V</th><th>What it is</th></tr></thead>
@@ -96,7 +96,7 @@
         </tbody>
       </table>
     </div>
-    <p style="margin-top: 22px;">The invariant survives the translation because it never rested on ARM: the loader stub <strong>reads the cage configuration back and refuses to dispatch on a mismatch</strong> — the RISC-V counterpart of refusing to boot below EL2. A cage that cannot be shown to stand does not get an app. And because a hart reset hands back a provably clean slot, a kill <em>is</em> a reset.</p>
+    <p style="margin-top: 22px;">On both, the loader stub <strong>reads the cage configuration back and refuses to dispatch on a mismatch</strong>: a cage that cannot be shown to stand does not get an app. And because a hart reset hands back a provably clean slot, a kill <em>is</em> a reset.</p>
   </div>
 </section>
 
@@ -105,6 +105,7 @@
     <h2>Nothing lives on the node</h2>
     <p class="section-lede">HopOS is <strong>stateless — and so is HOP on top of it</strong>. The boot stick carries a signed image and six lines of config; jobs, app images and cluster state live in object storage and are fetched at boot. <strong>State on S3, not on metal</strong> — there is nothing on the machine to lose, corrupt, drift or steal.</p>
     <p>That is the whole trick behind the power-cut number: pull the plug on 126 running jobs and the node rebuilds itself from S3 in 17.4&nbsp;s. Lose the machine entirely? Move the stick to another box. “Reinstall” means re-imaging a USB stick. Even shared data is designed to be <em>fetched, not owned</em>.</p>
+    <p style="margin-top: 22px;"><strong>An app that needs to keep something asks.</strong> Four of the ten ABI operations copy between a job’s own folder in the object store and its own file view — pull, push, list, drop. The node enforces the prefix, so <strong>an app cannot name anything outside its own folder</strong>, and it picks a name rather than a URL. Copies on demand, not a sync daemon: nothing promises persistence you did not ask for.</p>
   </div>
 </section>
 
@@ -113,17 +114,17 @@
     <h2>Small enough to actually read</h2>
     <p class="section-lede">Lines of code, excluding tests, comments and blanks, rounded so the numbers stay true across builds — and counted <strong>the way the compiler sees it</strong>: a file that only builds for one instruction set counts only against that one. So the bottom two rungs are an <em>either/or</em>. <strong>You audit one tree, never both.</strong> The rung you have to <em>trust</em> is the first one; drivers and board support are swappable outer layers, already outside every cage.</p>
     <div class="ladder" role="img" aria-label="HopOS code size per layer, in lines, split into shared code and per-architecture code">
-      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI</span><span class="bar"><i style="width:78%"></i></span><span class="n">~3,100</span></div>
-      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:87%"></i></span><span class="n">~3,450</span></div>
-      <div class="rung"><span class="lbl">drivers — NIC families, NVMe, sensors</span><span class="bar"><i style="width:37%"></i></span><span class="n">~1,450</span></div>
+      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI</span><span class="bar"><i style="width:85%"></i></span><span class="n">~3,300</span></div>
+      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:84%"></i></span><span class="n">~3,250</span></div>
+      <div class="rung"><span class="lbl">drivers — NIC families, NVMe, sensors</span><span class="bar"><i style="width:38%"></i></span><span class="n">~1,450</span></div>
       <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,250</span></div>
-      <div class="rung"><span class="lbl">firmware tables, boot config, display grant</span><span class="bar"><i style="width:32%"></i></span><span class="n">~1,250</span></div>
-      <div class="rung-split">portable Go so far: <b>~10,500 lines</b> — then pick exactly one:</div>
-      <div class="rung rung-arch"><span class="lbl"><b>arm64</b> — EL2 + stage-2, PSCI, UEFI/ACPI/DTB, igb·gem·genet</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,950</span></div>
-      <div class="rung rung-arch"><span class="lbl"><b>riscv64</b> — machine mode + PMP, SG2002, dwmac</span><span class="bar"><i style="width:39%"></i></span><span class="n">~1,550</span></div>
+      <div class="rung"><span class="lbl">firmware tables, boot config, display grant</span><span class="bar"><i style="width:33%"></i></span><span class="n">~1,275</span></div>
+      <div class="rung-split">portable Go so far: <b>~10,525 lines</b> — then pick exactly one:</div>
+      <div class="rung rung-arch"><span class="lbl"><b>arm64</b> — EL2 + stage-2, PSCI, UEFI/ACPI/DTB, igb·gem·genet</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,850</span></div>
+      <div class="rung rung-arch"><span class="lbl"><b>riscv64</b> — machine mode + PMP, SG2002, dwmac</span><span class="bar"><i style="width:53%"></i></span><span class="n">~2,050</span></div>
     </div>
-    <p class="ladder-sub">an arm64 node is <b>~14,450 lines</b> · a RISC-V node <b>~12,100</b></p>
-    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~14,450.</strong> Both trees together are ~16,000 lines, but no node ever runs both: <strong>a node still fits in a single AI context window</strong>, so you can audit the machine you actually booted in one sitting, human or machine.</p>
+    <p class="ladder-sub">an arm64 node is <b>~14,400 lines</b> · a RISC-V node <b>~12,600</b></p>
+    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~14,400.</strong> Both trees together are ~16,450 lines, but no node ever runs both: <strong>a node still fits in a single AI context window</strong>, so you can audit the machine you actually booted in one sitting, human or machine.</p>
     <div class="honest">
       <h3>HopOS does less. On purpose.</h3>
       <p>It runs <b>Go applications, compiled for HopOS</b> — no containers, no other languages, no general-purpose anything. That narrowness is where the isolation and the ~15 MB come from. Need Docker images or non-Go services? Run <a href="/hop/">HOP with its exec and Docker drivers</a> on a Linux box in the same cluster, and keep HopOS for the apps that deserve the metal.</p>
@@ -136,7 +137,7 @@
     <h2>Slot apps that already exist</h2>
     <p class="section-lede">The infrastructure a node usually needs is built and published as signed slot images. Each one is <strong>an ordinary app in a cage</strong> — no privileges, no MMIO, the same rules as your own code. A job spec points at the URL.</p>
     <dl class="apps">
-      <div><dt>welcome</dt><dd>A page on port 80 with what the node is running on: cores, RAM partition, architecture, uptime. <b>Ships in the default headless config</b> — <code>http://&lt;node-ip&gt;/</code> is the install check.</dd></div>
+      <div><dt>welcome</dt><dd>A page on port 80 with what the node is running on: cores, RAM partition, architecture, uptime. <b>Ships in the default headless config</b> — <code>http://&lt;node-ip&gt;/</code> is the install check. There is one running at <a href="https://demo.gethop.org">demo.gethop.org</a>.</dd></div>
       <div><dt>cloudflared</dt><dd>Cloudflare’s <b>own</b> <code>tunnel run</code>, unmodified: a node behind NAT, with no inbound port and no kernel, reachable from the internet.</dd></div>
       <div><dt>hoplb</dt><dd>Load balancer that takes its routes live from the cluster, streaming-safe for SSE and websockets.</dd></div>
       <div><dt>hopdns</dt><dd>Cluster DNS, so a job can say <code>display.hop.local</code> instead of an address — with static CNAMEs and merged federation queries.</dd></div>
@@ -160,7 +161,7 @@
         <thead><tr><th>Machine</th><th>App cores</th><th>Network</th><th>Sensors &amp; extras</th><th>Status</th></tr></thead>
         <tbody>
           <tr><td>Ampere Altra Dev Kit (128-core arm64)</td><td class="us">up to 127</td><td>1 GbE — Intel i210 (igb family)</td><td>SoC temperature, SBSA watchdog, GOP console</td><td><span class="st st-ok">proven — the reference machine</span></td></tr>
-          <tr><td>Raspberry Pi 5</td><td class="us">3</td><td>onboard GbE</td><td>temperature + clock policy (firmware mailbox), watchdog — incl. a workaround for a BCM2712-C1 silicon erratum we found on the way</td><td><span class="st st-ok">proven — 24 h soaks</span></td></tr>
+          <tr><td>Raspberry Pi 5</td><td class="us">3</td><td>onboard GbE</td><td>temperature + clock policy (firmware mailbox), watchdog</td><td><span class="st st-ok">proven — 24 h soaks</span></td></tr>
           <tr><td>Raspberry Pi 4</td><td class="us">3</td><td>onboard GbE (GENET)</td><td>temperature + clock policy, watchdog</td><td><span class="st st-ok">proven</span></td></tr>
           <tr><td>QEMU virt (EDK2 firmware)</td><td class="us">your -smp</td><td>emulated igb</td><td>the 5-minute quickstart below</td><td><span class="st st-ok">proven — dev &amp; CI target</span></td></tr>
           <tr><td>LicheeRV Nano (RISC-V — Sophgo SG2002, ~€15)</td><td class="us">1</td><td>100 Mb — internal ePHY (DWMAC), DHCP + NTP</td><td>on-die temperature, hardware RNG, console over the network</td><td><span class="st st-ok">proven — signed image, serving public traffic</span></td></tr>
@@ -171,7 +172,8 @@
       </table>
     </div>
     <p style="margin-top: 14px; font-size: 13px; color: var(--muted); font-family: var(--mono);">app cores = total − <a href="/hopos/docs/#config">hopos.cores</a> (default 1). The boot log above shows 126 because the reference node reserves two for itself.</p>
-    <p style="margin-top: 18px;">The RISC-V board is the newest port and ships as a signed image since v1.6.0. On it: the PMP cage, the slot lifecycle including kill and restart, DHCP and NTP over its own DWMAC driver, and <strong>cloudflared in a 62 MB partition</strong> putting the node on the public internet. Two harts, 256 MB and fifteen euros carry <strong>the same isolation contract as the 128-core Altra</strong> — the app ABI is identical, only the mechanism under it differs per silicon.</p>
+    <p style="margin-top: 18px;">On the RISC-V board: the PMP cage, the slot lifecycle including kill and restart, DHCP and NTP over its own DWMAC driver, and <strong>cloudflared in a 62 MB partition</strong> putting the node on the public internet. Two harts, 256 MB and fifteen euros carry <strong>the same isolation contract as the 128-core Altra</strong> — the app ABI is identical, only the mechanism under it differs per silicon.</p>
+    <p style="margin-top: 18px;"><strong>You can load that node right now: <a href="https://demo.gethop.org">demo.gethop.org</a>.</strong> It is one of these boards, on a desk, behind NAT. Two apps <em>cooperatively share its single app core</em> — the tunnel that makes it reachable and the page that answers you — each in its own partition. The uptime counter on that page is the soak test.</p>
   </div>
 </section>
 
