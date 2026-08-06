@@ -195,10 +195,10 @@
 <section id="download">
   <div class="wrap">
     <h2>Download</h2>
-    <p class="section-lede"><strong>The quick road is the imager</strong> — burn, configure and find HopOS nodes in <strong>one window, three tabs, no terminal</strong>. It fetches the newest signed release itself, writes <em>and verifies</em> the card in one pass, edits a node’s config without mounting anything, and its FIND tab lists every HopOS node on your network the moment it boots — boot log included.</p>
+    <p class="section-lede"><strong>The quick road is the imager</strong> — burn, configure, update and find HopOS nodes: <strong>one window, no terminal</strong>. It fetches the newest signed release itself, writes <em>and verifies</em> in one pass, updates a card <em>keeping its config</em>, and FIND lists every node on your network — boot log included.</p>
     <p style="margin-top: 6px;"><a class="btn btn-primary" href="https://github.com/xinix00/hop-imager">HopOS Imager — burn · configure · find →</a></p>
     <p style="margin-top: 10px; font-size: 13px; color: var(--muted); font-family: var(--mono);">macOS &amp; Linux · Windows: find + config edits, burning not yet</p>
-    <p style="margin-top: 26px;">Prefer files? Same signed images, and since v1.10 <strong>every one of them is the whole medium — USB stick included</strong>: <code>gunzip | dd</code>, power on, that’s the install. Every link points at the <strong>newest release</strong> — GitHub resolves <code>latest</code>, so nothing on this page goes stale. <strong>GUI</strong> boots a desktop, <strong>headless</strong> links zero graphics code.</p>
+    <p style="margin-top: 26px;">Prefer files? <strong>Every image is the whole medium — USB stick included</strong>: <code>gunzip | dd</code>, power on. <strong>GUI</strong> boots a desktop, <strong>headless</strong> links zero graphics code; every link resolves to the newest release.</p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Machine</th><th>GUI</th><th>Headless</th></tr></thead>
@@ -231,15 +231,14 @@
         </tbody>
       </table>
     </div>
-    <p style="margin-top: 22px;"><strong>No edit is required.</strong> The shipped configs boot with <code>hopos.insecure=1</code>, so a freshly written stick or card comes up as a working node right away — open API, on purpose, and the node <em>warns on every boot</em> until you swap that line for a <code>hopos.apikey</code>. Do that before it leaves a LAN you trust.</p>
-    <p style="margin-top: 18px;">Every image carries its config in a fixed-size <strong>config window</strong> — to a parser an ordinary config file, to the imager a block of bytes it can rewrite <em>in place</em>. That is why CONFIGURE works on the image before flashing and on the card after, without mounting a filesystem — even on the LicheeRV, whose config lives <em>inside the kernel</em> because that board has no SD driver of its own. The boot partition is plain FAT, so <code>hopos.cfg</code> also stays a text file you can edit by hand. Updating rather than reflashing? The release also carries the loose pieces: <a href="https://github.com/xinix00/HopOS/releases/latest/download/BOOTAA64.EFI">BOOTAA64.EFI</a> + <a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos.cfg">hopos.cfg</a> for an existing stick, per-board <code>.zip</code>s <a href="https://github.com/xinix00/HopOS/releases/latest">on the release</a> for an existing card.</p>
+    <p style="margin-top: 22px;"><strong>Boots by default.</strong> A fresh card is a working node — API open on purpose (<code>hopos.insecure=1</code>), warning on every boot until you give it a <code>hopos.apikey</code>. Configuring and updating happen <em>in place</em>, config intact, without mounting anything — even on the LicheeRV, where the config lives inside the kernel.</p>
     <p style="margin-top: 18px;"><strong>Verify before you boot it.</strong> Every release is signed with an SSH key; <a href="https://github.com/xinix00/HopOS/releases/latest/download/allowed_signers">allowed_signers</a> and <a href="https://github.com/xinix00/HopOS/releases/latest/download/release_key.pub">release_key.pub</a> are published next to it.</p>
     <div class="term" style="max-width: 720px; margin-top: 18px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;check the signature, then the images</div>
       <pre><span class="ps">$</span> ssh-keygen -Y verify -f allowed_signers -I hello@gethop.org \
       -n gethop-release -s <a href="https://github.com/xinix00/HopOS/releases/latest/download/SHA256SUMS.sig">SHA256SUMS.sig</a> &lt; <a href="https://github.com/xinix00/HopOS/releases/latest/download/SHA256SUMS">SHA256SUMS</a>
 <span class="ps">$</span> shasum -a 256 -c SHA256SUMS
-<span class="out">BOOTAA64.EFI: OK</span></pre>
+<span class="out">hopos-uefi.img.gz: OK</span></pre>
     </div>
     <p style="margin-top: 26px;">Rather build it yourself — or read what you just downloaded?</p>
     <p style="margin-top: 12px;"><a class="btn btn-ghost" href="https://github.com/xinix00/HopOS">the source · HopOS on GitHub →</a></p>
