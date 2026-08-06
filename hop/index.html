@@ -10,7 +10,7 @@
 <meta property="og:url" content="https://gethop.org/hop/">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>">
-<link rel="stylesheet" href="/style.css?v=4">
+<link rel="stylesheet" href="/style.css?v=5">
 </head>
 <body class="pg-hop">
 
@@ -23,7 +23,6 @@
       <a href="#download">download</a>
       <a href="/hop/docs/">docs</a>
       <a class="other-hopos" href="/hopos/">HopOS · the Go-only OS →</a>
-      <a class="gh" href="https://github.com/xinix00/hop">GitHub</a>
     </div>
   </div>
 </nav>
@@ -35,7 +34,7 @@
       <h1>One binary runs the cluster.</h1>
       <p class="lede">Agent, leader and HTTP API in <strong>one Go binary — no database, no sidecars</strong>. Jobs with health checks, restarts and priorities; an HMAC-signed API; leader election on a CAS lock with cluster state in <strong>any S3 bucket</strong> — a node that reboots brings its own jobs back. And it runs <strong>every kind of workload</strong>: processes, containers, whole machines.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="https://github.com/xinix00/hop">HOP on GitHub →</a>
+        <a class="btn btn-primary" href="#download">download HOP →</a>
         <a class="btn btn-ghost" href="https://gui.gethop.org">the GUI</a>
         <a class="btn btn-ghost" href="#compare">vs K3s &amp; Nomad</a>
       </div>
@@ -122,7 +121,7 @@ linux-2   http://10.0.0.31:8080   19:41:03
 <section id="download">
   <div class="wrap">
     <h2>Download</h2>
-    <p class="section-lede">Each archive holds two files: <strong><code>agent</code></strong> — the node, which is agent, leader and HTTP API in one process — and <strong><code>run</code></strong>, the CLI you drive it with. Every link points at the <strong>newest release</strong>; GitHub resolves <code>latest</code>, so nothing here goes stale.</p>
+    <p class="section-lede">Each archive holds two files: <strong><code>agent</code></strong> — the node, which is agent, leader and HTTP API in one process — and <strong><code>run</code></strong>, the CLI you drive it with. Built from <a href="https://github.com/xinix00/hop">the source on GitHub</a>. Every link points at the <strong>newest release</strong>; GitHub resolves <code>latest</code>, so nothing here goes stale.</p>
     <div class="tbl-wrap">
       <table style="min-width: 560px;">
         <thead><tr><th>Platform</th><th>Archive</th><th>Drivers</th></tr></thead>

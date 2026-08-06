@@ -257,6 +257,8 @@ td.us::before { content: "▸ "; color: var(--acc); }
 .rung-split b { color: var(--acc); font-weight: 600; }
 .rung-arch .lbl b { color: var(--acc); }
 .rung-arch .bar i { background: color-mix(in srgb, var(--acc) 55%, var(--panel)); }
+.rung-board .lbl b { color: var(--text); }
+.rung-board .bar i { background: color-mix(in srgb, var(--acc) 28%, var(--panel)); }
 
 /* ── cards & callouts ───────────────────────────────────── */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
