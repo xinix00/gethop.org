@@ -68,7 +68,7 @@
           <tr><td>SMT side channels (MDS family)</td><td>Disable hyperthreading, scrub buffers</td><td class="us">No involuntary co-tenancy — an attacker can never land on your core. Sharing is opt-in, among apps you name.</td></tr>
           <tr><td>Spectre across processes</td><td>Flush branch predictors on every context switch</td><td class="us">Your neighbour never runs on your core unless you put them there — an adversary can’t.</td></tr>
           <tr><td>Container escapes (runc, Dirty&nbsp;Pipe, …)</td><td>Patch treadmill</td><td class="us">No containers, and no shared kernel to escape into.</td></tr>
-          <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of <strong>twelve operations</strong>, enforced by hardware, not policy.</td></tr>
+          <tr><td>~400 syscalls + ioctl jungle</td><td>seccomp/AppArmor profiles you must write</td><td class="us">An ABI of <strong>ten operations</strong>, enforced by hardware, not policy.</td></tr>
           <tr><td>Rogue DMA from a workload</td><td>IOMMU configuration, fingers crossed</td><td class="us">Apps have zero MMIO. Only the node programs devices.</td></tr>
         </tbody>
       </table>
@@ -104,7 +104,7 @@
     <h2>Nothing lives on the node</h2>
     <p class="section-lede">HopOS is <strong>stateless — and so is HOP on top of it</strong>. The boot stick carries a signed image and six lines of config; jobs, app images and cluster state live in object storage and are fetched at boot. <strong>State on S3, not on metal</strong> — there is nothing on the machine to lose, corrupt, drift or steal.</p>
     <p>That is the whole trick behind the power-cut number: pull the plug on 126 running jobs and the node rebuilds itself from S3 in 17.4&nbsp;s. Lose the machine entirely? Move the stick to another box. “Reinstall” means re-imaging a USB stick. Even shared data is designed to be <em>fetched, not owned</em>.</p>
-    <p style="margin-top: 22px;"><strong>An app that needs to keep something asks.</strong> Four of the twelve ABI operations copy between a job’s own folder in the object store and its own file view — pull, push, list, drop. The node enforces the prefix, so <strong>an app cannot name anything outside its own folder</strong>, and it picks a name rather than a URL. Copies on demand, not a sync daemon: nothing promises persistence you did not ask for.</p>
+    <p style="margin-top: 22px;"><strong>An app that needs to keep something asks.</strong> Four of the ten ABI operations copy between a job’s own folder in the object store and its own file view — pull, push, list, drop. The node enforces the prefix, so <strong>an app cannot name anything outside its own folder</strong>, and it picks a name rather than a URL. Copies on demand, not a sync daemon: nothing promises persistence you did not ask for.</p>
   </div>
 </section>
 
@@ -113,28 +113,28 @@
     <h2>Small enough to actually read</h2>
     <p class="section-lede">Lines of code, excluding tests, comments and blanks — counted <strong>the way the compiler sees it</strong>, by <a href="https://github.com/xinix00/HopOS/blob/main/tools/loc.go">a script</a> that runs <code>go list</code> per release image. A file that only links for one instruction set or one board counts only there; example apps, probes and dev targets don’t ride along. <strong>If it isn’t in the image you boot, it isn’t in the number.</strong> The rung you have to <em>trust</em> is the first one; the board rung — its NIC, PHY and display drivers included — is a swappable outer shell, already outside every cage.</p>
     <div class="ladder" role="img" aria-label="HopOS code size in lines: portable layers, then one instruction set, then one board">
-      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI, object store</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,550</span></div>
-      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:30%"></i></span><span class="n">~1,050</span></div>
-      <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:39%"></i></span><span class="n">~1,400</span></div>
+      <div class="rung"><span class="lbl"><b>isolation core</b> — cages, slots, ABI, object store</span><span class="bar"><i style="width:100%"></i></span><span class="n">~3,500</span></div>
+      <div class="rung"><span class="lbl">app runtime + node mains</span><span class="bar"><i style="width:28%"></i></span><span class="n">~975</span></div>
+      <div class="rung"><span class="lbl">network stack — switch, NAT, DHCP</span><span class="bar"><i style="width:40%"></i></span><span class="n">~1,400</span></div>
       <div class="rung"><span class="lbl">portable drivers — console, NVMe, PCIe</span><span class="bar"><i style="width:25%"></i></span><span class="n">~875</span></div>
       <div class="rung"><span class="lbl">boot config + the board contract</span><span class="bar"><i style="width:4%"></i></span><span class="n">~150</span></div>
-      <div class="rung-split">portable Go — in every node: <b>~7,050 lines</b> — then pick one instruction set:</div>
-      <div class="rung rung-arch"><span class="lbl"><b>arm64</b> — EL2 + stage-2, PSCI, SMP</span><span class="bar"><i style="width:46%"></i></span><span class="n">~1,650</span></div>
+      <div class="rung-split">portable Go — in every node: <b>~6,950 lines</b> — then pick one instruction set:</div>
+      <div class="rung rung-arch"><span class="lbl"><b>arm64</b> — EL2 + stage-2, PSCI, SMP</span><span class="bar"><i style="width:46%"></i></span><span class="n">~1,625</span></div>
       <div class="rung rung-arch"><span class="lbl"><b>riscv64</b> — machine mode + PMP cage, slot stub</span><span class="bar"><i style="width:37%"></i></span><span class="n">~1,300</span></div>
       <div class="rung-split">…and exactly one board — <b>drivers included</b>, all of it outside every cage:</div>
       <!-- Afspraak: boards krijgen GEEN eigen rij — een board weegt ~2.000
            regels en dat getal hanteren we hier, anders groeit deze ladder
            per bord. De echte nummers per board, uit `go run tools/loc.go`
-           (HopOS-repo, cwd metal/), na de beeldketen-verhuizing (6ea8f8f):
-             uefi/Altra 2.127 · rpi5 2.264 · rpi4 1.883 · rk3566 2.254 · licheerv 1.706
-           De gui-smaak telt apart (zie de regel hieronder): +365 grants op
+           (HopOS-repo, cwd metal/), op v1.9.2:
+             uefi/Altra 2.127 · rpi5 2.264 · rpi4 1.883 · rk3566 2.253 · licheerv 1.706
+           De gui-smaak telt apart (zie de regel hieronder): +95 grant op
            alle gui-boards, +808 rkscan alleen op de rk3566. Volledige
            tabel: docs/technical/isolation.md. -->
-      <div class="rung rung-board"><span class="lbl"><b>your board</b> — its NIC and PHY drivers</span><span class="bar"><i style="width:56%"></i></span><span class="n">~2,000</span></div>
+      <div class="rung rung-board"><span class="lbl"><b>your board</b> — its NIC and PHY drivers</span><span class="bar"><i style="width:57%"></i></span><span class="n">~2,000</span></div>
       <div class="rung-split">that is the <b>headless</b> image — the GUI flavour is <b>opt-in</b>, on top</div>
     </div>
-    <p class="ladder-sub">the node you boot: Altra <b>~10,850</b> · the €15 RISC-V board <b>~10,100</b> — always portable + one ISA + one board</p>
-    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~10,850.</strong> No node ever links two boards or two instruction sets: whatever you boot is <em>portable + one ISA + one board</em>, so <strong>a node fits in a single AI context window</strong> and you can audit the machine you actually booted in one sitting, human or machine.</p>
+    <p class="ladder-sub">the node you boot: Altra <b>~10,700</b> · the €15 RISC-V board <b>~9,950</b> — always portable + one ISA + one board</p>
+    <p style="margin-top: 24px;">A Linux node doing the same job trusts GRUB, the kernel (~30,000,000 lines), systemd, libc <em>and</em> a container runtime. <strong>HopOS is the whole node — bootloader included — in ~10,700.</strong> No node ever links two boards or two instruction sets: whatever you boot is <em>portable + one ISA + one board</em>, so <strong>a node fits in a single AI context window</strong> and you can audit the machine you actually booted in one sitting, human or machine.</p>
     <p style="margin-top: 18px;"><strong>The board rung is where new hardware lands — the core stays put.</strong> Five boards so far and every one weighs in around those ~2,000 lines. Even the Radxa Zero 3E fits, and its firmware lights neither the NIC nor the HDMI connector: the GMAC and PHY sit in its board rung, the scanout in the GUI flavour — a headless image links <em>zero</em> graphics. Of the whole port, about <em>fifty</em> lines touched the portable core. Supporting a new board is a driver problem, not an OS problem.</p>
     <div class="honest">
       <h3>HopOS does less. On purpose.</h3>
@@ -205,34 +205,35 @@
             <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/BOOTAA64-headless.EFI">BOOTAA64-headless.EFI</a></td>
           </tr>
           <tr>
-            <td>Raspberry Pi 5 — SD card</td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5.zip">hopos-rpi5.zip</a></td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5-headless.zip">hopos-rpi5-headless.zip</a></td>
+            <td>Raspberry Pi 5 — SD card, the whole card</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5.img.gz">hopos-rpi5.img.gz</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi5-headless.img.gz">hopos-rpi5-headless.img.gz</a></td>
           </tr>
           <tr>
-            <td>Raspberry Pi 4 — SD card</td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4.zip">hopos-rpi4.zip</a></td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4-headless.zip">hopos-rpi4-headless.zip</a></td>
+            <td>Raspberry Pi 4 — SD card, the whole card</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4.img.gz">hopos-rpi4.img.gz</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-rpi4-headless.img.gz">hopos-rpi4-headless.img.gz</a></td>
           </tr>
           <tr>
-            <td>Node config — needed for UEFI, already inside the Pi zips</td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos.cfg">hopos.cfg</a></td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-headless.cfg">hopos-headless.cfg</a></td>
-          </tr>
-          <tr>
-            <td>Radxa Zero 3E — SD card, on top of the card’s own U-Boot</td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-radxa-zero3.zip">hopos-radxa-zero3.zip</a></td>
-            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-radxa-zero3-headless.zip">hopos-radxa-zero3-headless.zip</a></td>
+            <td>Radxa Zero 3E — SD card, boot chain baked in</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-radxa-zero3.img.gz">hopos-radxa-zero3.img.gz</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-radxa-zero3-headless.img.gz">hopos-radxa-zero3-headless.img.gz</a></td>
           </tr>
           <tr>
             <td>LicheeRV Nano — RISC-V, SD card</td>
             <td>no framebuffer on this board</td>
             <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-licheerv.img.gz">hopos-licheerv.img.gz</a></td>
           </tr>
+          <tr>
+            <td>Node config — needed for UEFI, already on every card image</td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos.cfg">hopos.cfg</a></td>
+            <td class="us"><a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-headless.cfg">hopos-headless.cfg</a></td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <p style="margin-top: 22px;"><strong>No edit is required.</strong> The shipped configs boot with <code>hopos.insecure=1</code>, so a freshly written stick or card comes up as a working node right away — open API, on purpose, and the node <em>warns on every boot</em> until you swap that line for a <code>hopos.apikey</code>. Do that before it leaves a LAN you trust. For UEFI, the headless EFI has to be renamed to <code>BOOTAA64.EFI</code> on the stick — the firmware looks for that exact name. The Radxa zip rides the card’s <strong>own U-Boot</strong>: write any Radxa/Armbian image once, then unzip the three files onto the boot partition — <code>extlinux.conf</code> points U-Boot at our image instead of Linux. The RISC-V image is the <strong>whole card</strong>, partition table included, and carries its config <em>inside</em>: that board has no SD driver of its own, so <a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-licheerv.cfg">hopos-licheerv.cfg</a> is what went into this build rather than something you edit afterwards — change it by rebuilding.</p>
+    <p style="margin-top: 22px;"><strong>No edit is required.</strong> The shipped configs boot with <code>hopos.insecure=1</code>, so a freshly written stick or card comes up as a working node right away — open API, on purpose, and the node <em>warns on every boot</em> until you swap that line for a <code>hopos.apikey</code>. Do that before it leaves a LAN you trust.</p>
+    <p style="margin-top: 18px;">Every <code>.img.gz</code> is the <strong>whole card</strong> — partition table, boot chain, config: <code>gunzip | dd</code> and it boots. On the Radxa that includes the vendor boot chain on the raw sectors where the boot ROM looks. The boot partition is plain FAT, so the card mounts anywhere and <code>hopos.cfg</code> stays a text file you can edit; matching <code>.zip</code>s exist <a href="https://github.com/xinix00/HopOS/releases/latest">on the release</a> for updating a card without a reflash. Two exceptions: <strong>UEFI</strong> is copy-two-files onto a FAT32 stick (headless: rename the EFI to <code>BOOTAA64.EFI</code> — the firmware looks for that exact name), and the <strong>LicheeRV</strong> carries its config <em>inside</em> the kernel: that board has no SD driver of its own, so <a href="https://github.com/xinix00/HopOS/releases/latest/download/hopos-licheerv.cfg">hopos-licheerv.cfg</a> is what went into this build — change it by rebuilding.</p>
     <p style="margin-top: 18px;"><strong>Verify before you boot it.</strong> Every release is signed with an SSH key; <a href="https://github.com/xinix00/HopOS/releases/latest/download/allowed_signers">allowed_signers</a> and <a href="https://github.com/xinix00/HopOS/releases/latest/download/release_key.pub">release_key.pub</a> are published next to it.</p>
     <div class="term" style="max-width: 720px; margin-top: 18px;">
       <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;check the signature, then the images</div>
@@ -261,16 +262,11 @@
       <div class="term">
         <div class="term-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;on real metal — stick or SD card</div>
         <pre><span class="cmt"># signed images: <a href="https://github.com/xinix00/HopOS/releases">github.com/xinix00/HopOS/releases</a></span>
-<span class="cmt"># UEFI arm64 box — USB stick, FAT32</span>
+<span class="cmt"># any SD-card board — Pi 4/5, Radxa, LicheeRV: one command, whole card</span>
+<span class="ps">$</span> gunzip -c hopos-rpi5.img.gz | sudo dd of=/dev/rdiskN bs=4m
+<span class="cmt"># the one exception: UEFI arm64 box — USB stick, FAT32, two copies</span>
 <span class="ps">$</span> cp BOOTAA64.EFI /Volumes/STICK/EFI/BOOT/
 <span class="ps">$</span> cp hopos.cfg /Volumes/STICK/    <span class="cmt"># boots as-is, insecure until you set a key</span>
-<span class="cmt"># Raspberry Pi 4/5 — SD card, config included</span>
-<span class="ps">$</span> unzip hopos-rpi5.zip -d /Volumes/bootfs
-<span class="cmt"># Radxa Zero 3E — onto the boot partition, U-Boot stays</span>
-<span class="ps">$</span> unzip hopos-radxa-zero3.zip -d /Volumes/boot
-<span class="cmt"># LicheeRV Nano — RISC-V, the whole card</span>
-<span class="ps">$</span> gunzip hopos-licheerv.img.gz
-<span class="ps">$</span> sudo dd if=hopos-licheerv.img of=/dev/rdiskN bs=4m
 <span class="cmt"># plug in, power on. that’s the install.</span>
 <span class="ps">$</span> open http://&lt;node-ip&gt;/          <span class="cmt"># the node says hi</span></pre>
       </div>
