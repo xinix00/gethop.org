@@ -172,6 +172,8 @@ h1 {
 .btn-primary:hover { filter: brightness(1.12); text-decoration: none; }
 .btn-ghost { border-color: var(--line); color: var(--text); }
 .btn-ghost:hover { border-color: var(--acc-dim); text-decoration: none; }
+.btn-dl { display: inline-flex; align-items: center; gap: 9px; }
+.btn-dl svg { flex: none; }
 .cross { font-family: var(--mono); font-size: 12.5px; margin-top: 20px; color: var(--muted); }
 .cross a.to-hop { color: var(--copper); }
 .cross a.to-hopos { color: var(--leaf); }
